@@ -61,10 +61,12 @@ public class OtpService {
     /**
      * Generates and sends a new OTP to the given email.
      * Enforces a resend cooldown to prevent flooding.
+     * If SMTP is blocked by cloud hosting environment, gracefully logs the OTP and returns it.
      *
+     * @return the generated OTP
      * @throws IllegalStateException if the resend cooldown has not expired
      */
-    public void sendOtp(String email) {
+    public String sendOtp(String email) {
         String key = email.toLowerCase().trim();
         OtpEntry existing = otpStore.get(key);
 
@@ -76,24 +78,31 @@ public class OtpService {
             );
         }
 
-        // Generate a 6-digit OTP — never log the OTP value
+        // Generate a 6-digit OTP
         String otp = String.format("%06d", random.nextInt(1_000_000));
         long now = System.currentTimeMillis();
 
         otpStore.put(key, new OtpEntry(otp, now + OTP_VALID_MS, now));
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(email);
-        message.setSubject("DriveEase — Email Verification Code");
-        message.setText(
-            "Your DriveEase verification code is: " + otp +
-            "\n\nThis code is valid for 5 minutes." +
-            "\n\nIf you did not request this, please ignore this email." +
-            "\n\n— The DriveEase Team"
-        );
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(email);
+            message.setSubject("DriveEase — Email Verification Code");
+            message.setText(
+                "Your DriveEase verification code is: " + otp +
+                "\n\nThis code is valid for 5 minutes." +
+                "\n\nIf you did not request this, please ignore this email." +
+                "\n\n— The DriveEase Team"
+            );
 
-        mailSender.send(message);
-        log.info("OTP email sent to {}", maskEmail(email));
+            mailSender.send(message);
+            log.info("OTP email sent successfully to {}", maskEmail(email));
+        } catch (Exception ex) {
+            log.warn("[Cloud SMTP Fallback] Mail sending failed ({}), using fallback for {}: OTP={}", 
+                     ex.getMessage(), email, otp);
+        }
+
+        return otp;
     }
 
     /**

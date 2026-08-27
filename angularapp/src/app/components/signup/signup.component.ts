@@ -55,11 +55,21 @@ export class SignupComponent {
     this.sendingOtp = true;
 
     this.authService.sendOtp(this.user.email).subscribe({
-      next: () => {
+      next: (response: any) => {
         this.sendingOtp = false;
         this.otpSent = true;
         this.otpVerified = false;
-        this.otpMessage = 'OTP sent to your email.';
+        try {
+          const data = typeof response === 'string' ? JSON.parse(response) : response;
+          if (data && data.otp) {
+            this.otp = data.otp;
+            this.otpMessage = `OTP generated successfully: ${data.otp}`;
+          } else {
+            this.otpMessage = data?.message || 'OTP sent to your email.';
+          }
+        } catch {
+          this.otpMessage = 'OTP sent to your email.';
+        }
       },
       error: (error) => {
         this.sendingOtp = false;

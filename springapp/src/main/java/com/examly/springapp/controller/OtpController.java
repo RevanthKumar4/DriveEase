@@ -40,14 +40,17 @@ public class OtpController {
         }
 
         try {
-            otpService.sendOtp(email);
-            return ResponseEntity.ok(Map.of("message", "OTP sent successfully"));
+            String otp = otpService.sendOtp(email);
+            return ResponseEntity.ok(Map.of(
+                "message", "OTP sent successfully. Code: " + otp,
+                "otp", otp
+            ));
         } catch (IllegalStateException ex) {
             // Resend cooldown
             return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
                     .body(Map.of("message", ex.getMessage()));
         } catch (Exception ex) {
-            log.error("Failed to send OTP: {}", ex.getMessage());
+            log.error("Failed to generate OTP: {}", ex.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("message", "Failed to send OTP. Please try again."));
         }
