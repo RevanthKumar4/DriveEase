@@ -1,23 +1,19 @@
 # ============================================================
 # DriveEase — Render.com Deployment Blueprint
 # ============================================================
-# Deploy at: https://dashboard.render.com/select-repo
-# Select this repo and Render will read this file automatically.
-# ============================================================
 
 services:
   - type: web
     name: driveease-backend
-    runtime: java
-    region: singapore   # closest free region to India
+    runtime: docker
+    region: singapore
     plan: free
 
-    # Build from the springapp subdirectory
-    rootDir: springapp
-    buildCommand: ./mvnw clean package -DskipTests --no-transfer-progress
-    startCommand: java -Djava.security.egd=file:/dev/./urandom -jar target/springapp-0.0.1-SNAPSHOT.jar
+    # Path to Dockerfile
+    dockerfilePath: ./springapp/Dockerfile
+    dockerContext: ./springapp
 
-    # Health check — Render uses this to know the service is up
+    # Health check
     healthCheckPath: /actuator/health
 
     envVars:
@@ -27,11 +23,8 @@ services:
       - key: SERVER_PORT
         value: "8080"
 
-      # ⚠️  Fill in the values below in the Render dashboard
-      # or set them as environment variables in Render
-
       - key: DATABASE_URL
-        sync: false   # set manually in Render dashboard
+        sync: false
 
       - key: DATABASE_USERNAME
         sync: false
@@ -40,7 +33,7 @@ services:
         sync: false
 
       - key: JWT_SECRET
-        generateValue: true   # Render auto-generates a secure random value
+        generateValue: true
 
       - key: JWT_EXPIRATION_MS
         value: "86400000"
@@ -61,7 +54,7 @@ services:
         sync: false
 
       - key: CORS_ALLOWED_ORIGINS
-        sync: false   # set to your Vercel URL, e.g. https://driveease.vercel.app
+        value: "*"
 
       - key: FLYWAY_ENABLED
         value: "false"
