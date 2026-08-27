@@ -1,0 +1,91 @@
+<div
+  [ngClass]="isDarkMode
+    ? 'bg-[#050505] text-slate-200'
+    : 'bg-[#e7e3dc] text-[#25231f]'"
+  class="min-h-screen w-full flex items-center justify-center px-4 relative overflow-hidden transition-colors duration-500 font-sans"
+>
+
+  <!-- Decorative glow -->
+  <div
+    [ngClass]="isDarkMode ? 'bg-red-600/15' : 'bg-[#c95812]/12'"
+    class="pointer-events-none absolute -top-24 -right-24 w-96 h-96 rounded-full blur-[120px]"
+  ></div>
+  <div
+    [ngClass]="isDarkMode ? 'bg-orange-500/10' : 'bg-[#a9420c]/10'"
+    class="pointer-events-none absolute -bottom-24 -left-24 w-96 h-96 rounded-full blur-[120px]"
+  ></div>
+
+  <!-- Card -->
+  <div
+    [ngClass]="isDarkMode
+      ? 'bg-[#13151a]/90 border-white/10'
+      : 'bg-[#f0ece5]/95 border-[#cec7bd]'"
+    class="relative z-10 w-full max-w-md border rounded-2xl p-8 text-center shadow-2xl backdrop-blur-xl transition-colors duration-500"
+  >
+
+    <!-- Icon -->
+    <div
+      [ngClass]="isDarkMode
+        ? 'bg-red-500/15 text-red-400 border-red-500/30'
+        : 'bg-[#f1dccb] text-[#c95812] border-[#c95812]/40'"
+      class="w-20 h-20 mx-auto rounded-full flex items-center justify-center border-2 mb-5"
+    >
+      <lucide-icon name="alert-circle" class="w-10 h-10"></lucide-icon>
+    </div>
+
+    <!-- 404 -->
+    <h1
+      [ngClass]="isDarkMode
+        ? 'from-red-500 to-orange-400'
+        : 'from-[#a9420c] via-[#c95812] to-[#dc7a39]'"
+      class="text-6xl font-extrabold bg-gradient-to-r bg-clip-text text-transparent mb-1"
+    >
+      404
+    </h1>
+
+    <h2
+      [ngClass]="isDarkMode ? 'text-white' : 'text-[#25231f]'"
+      class="text-xl font-bold mb-2"
+    >
+      Page Not Found
+    </h2>
+
+    <p
+      [ngClass]="isDarkMode ? 'text-slate-400' : 'text-[#686158]'"
+      class="text-sm font-medium leading-relaxed mb-7"
+    >
+      The page you are looking for doesn’t exist or may have been moved.
+      Let’s get you back on the road.
+    </p>
+
+    <!-- Actions -->
+    <div class="flex flex-col gap-3">
+
+      <button
+        type="button"
+        routerLink="/login"
+        [ngClass]="isDarkMode
+          ? 'from-red-600 to-orange-500 shadow-[0_0_20px_-5px_rgba(239,68,68,0.5)]'
+          : 'from-[#a9420c] via-[#c95812] to-[#dc7a39] shadow-[0_10px_25px_rgba(169,66,12,0.30)]'"
+        class="w-full inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-gradient-to-r text-white text-xs font-extrabold uppercase tracking-widest hover:-translate-y-0.5 transition-all"
+      >
+        <lucide-icon name="arrow-left" class="w-4 h-4"></lucide-icon>
+        Back to Login
+      </button>
+
+      <button
+        type="button"
+        routerLink="/customer/home"
+        [ngClass]="isDarkMode
+          ? 'bg-white/5 hover:bg-white/10 border-white/10 text-white'
+          : 'bg-[#e7e3dc] hover:bg-[#f1dccb] border-[#cec7bd] text-[#545047]'"
+        class="w-full inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg border text-xs font-bold uppercase tracking-widest transition-all"
+      >
+        <lucide-icon name="map-pin" class="w-4 h-4"></lucide-icon>
+        Go to Home
+      </button>
+
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,596 @@
+<div class="admin-page drivers-page">
+
+  <!-- PAGE HEADER -->
+  <header class="drivers-header">
+
+    <div>
+      <p class="admin-page-label">
+        DriveU Fleet
+      </p>
+
+      <h1 class="admin-page-title">
+        Driver <span>Management</span>
+      </h1>
+
+      <p class="admin-page-description">
+        Manage drivers, monitor availability and optimize transportation
+        services.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="add-driver-button"
+      routerLink="/admin/add-driver"
+    >
+      <lucide-icon name="user-plus"></lucide-icon>
+      <span>Add New Driver</span>
+    </button>
+
+  </header>
+
+  <!-- ERROR ALERT -->
+  <div
+    *ngIf="errorMessage"
+    class="page-alert error-alert"
+    role="alert"
+  >
+    <div class="alert-icon">
+      <lucide-icon name="circle-alert"></lucide-icon>
+    </div>
+
+    <div class="alert-content">
+      <strong>Operation Failed</strong>
+      <span>{{ errorMessage }}</span>
+    </div>
+
+    <button
+      type="button"
+      class="alert-close"
+      aria-label="Close error message"
+      (click)="closeMessage()"
+    >
+      <lucide-icon name="x"></lucide-icon>
+    </button>
+  </div>
+
+  <!-- SUCCESS ALERT -->
+  <div
+    *ngIf="successMessage"
+    class="page-alert success-alert"
+    role="status"
+  >
+    <div class="alert-icon">
+      <lucide-icon name="circle-check"></lucide-icon>
+    </div>
+
+    <div class="alert-content">
+      <strong>Operation Successful</strong>
+      <span>{{ successMessage }}</span>
+    </div>
+
+    <button
+      type="button"
+      class="alert-close"
+      aria-label="Close success message"
+      (click)="closeMessage()"
+    >
+      <lucide-icon name="x"></lucide-icon>
+    </button>
+  </div>
+
+  <!-- STATISTICS -->
+  <section class="driver-statistics">
+
+    <article class="stat-card">
+      <div class="stat-icon stat-total">
+        <lucide-icon name="users"></lucide-icon>
+      </div>
+
+      <div>
+        <span class="stat-label">Total Drivers</span>
+        <strong>{{ totalDrivers }}</strong>
+        <small>Registered drivers</small>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon stat-available">
+        <lucide-icon name="circle-check"></lucide-icon>
+      </div>
+
+      <div>
+        <span class="stat-label">Available</span>
+        <strong>{{ availableDrivers }}</strong>
+        <small>Ready for a ride</small>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon stat-busy">
+        <lucide-icon name="clock-3"></lucide-icon>
+      </div>
+
+      <div>
+        <span class="stat-label">Busy</span>
+        <strong>{{ busyDrivers }}</strong>
+        <small>Currently on trips</small>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon stat-offline">
+        <lucide-icon name="power"></lucide-icon>
+      </div>
+
+      <div>
+        <span class="stat-label">Offline</span>
+        <strong>{{ offlineDrivers }}</strong>
+        <small>Currently unavailable</small>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- FILTER BAR -->
+  <section class="filter-panel">
+
+    <!-- SEARCH -->
+    <div class="filter-control search-control">
+      <lucide-icon
+        name="search"
+        class="filter-icon"
+      ></lucide-icon>
+
+      <input
+        type="text"
+        name="searchText"
+        [(ngModel)]="searchText"
+        placeholder="Search by name, license, contact or vehicle..."
+        autocomplete="off"
+        (input)="filterDrivers()"
+      />
+
+      <button
+        *ngIf="searchText"
+        type="button"
+        class="clear-search-button"
+        aria-label="Clear search"
+        (click)="clearSearch()"
+      >
+        <lucide-icon name="x"></lucide-icon>
+      </button>
+    </div>
+
+    <!-- STATUS -->
+    <div class="filter-control select-control">
+      <lucide-icon
+        name="circle-dot"
+        class="filter-icon"
+      ></lucide-icon>
+
+      <select
+        name="selectedStatus"
+        [(ngModel)]="selectedStatus"
+        (change)="filterDrivers()"
+      >
+        <option value="">All Status</option>
+        <option value="Available">Available</option>
+        <option value="Busy">Busy</option>
+        <option value="Offline">Offline</option>
+      </select>
+
+      <lucide-icon
+        name="chevron-down"
+        class="select-arrow"
+      ></lucide-icon>
+    </div>
+
+    <!-- SORT -->
+    <div class="filter-control select-control">
+      <lucide-icon
+        name="arrow-up-down"
+        class="filter-icon"
+      ></lucide-icon>
+
+      <select
+        name="selectedSort"
+        [(ngModel)]="selectedSort"
+        (change)="filterDrivers()"
+      >
+        <option value="nameAsc">Name: A to Z</option>
+        <option value="nameDesc">Name: Z to A</option>
+        <option value="rateLow">Rate: Low to High</option>
+        <option value="rateHigh">Rate: High to Low</option>
+        <option value="experienceHigh">
+          Experience: High to Low
+        </option>
+      </select>
+
+      <lucide-icon
+        name="chevron-down"
+        class="select-arrow"
+      ></lucide-icon>
+    </div>
+
+  </section>
+
+  <!-- RESULTS INFORMATION -->
+  <div class="results-information">
+    <span>
+      Showing
+      <strong>{{ filteredDrivers.length }}</strong>
+      of
+      <strong>{{ drivers.length }}</strong>
+      drivers
+    </span>
+
+    <button
+      *ngIf="searchText || selectedStatus"
+      type="button"
+      class="reset-filter-button"
+      (click)="resetFilters()"
+    >
+      <lucide-icon name="rotate-ccw"></lucide-icon>
+      <span>Reset Filters</span>
+    </button>
+  </div>
+
+  <!-- LOADING -->
+  <div
+    *ngIf="isLoading"
+    class="drivers-loading"
+  >
+    <div class="loading-spinner">
+      <lucide-icon name="loader-circle"></lucide-icon>
+    </div>
+
+    <h2>Loading Drivers</h2>
+
+    <p>Please wait while driver information is being loaded.</p>
+  </div>
+
+  <!-- EMPTY STATE -->
+  <div
+    *ngIf="!isLoading && filteredDrivers.length === 0"
+    class="drivers-empty-state"
+  >
+    <div class="empty-state-icon">
+      <lucide-icon name="user-search"></lucide-icon>
+    </div>
+
+    <h2>No Drivers Found</h2>
+
+    <p>
+      No driver matches the current search or status filter.
+    </p>
+
+    <button
+      type="button"
+      class="reset-empty-button"
+      (click)="resetFilters()"
+    >
+      <lucide-icon name="rotate-ccw"></lucide-icon>
+      <span>Reset Filters</span>
+    </button>
+  </div>
+
+  <!-- DRIVER CARDS -->
+  <section
+    *ngIf="!isLoading && filteredDrivers.length > 0"
+    class="drivers-grid"
+  >
+
+    <article
+      *ngFor="let driver of paginatedDrivers; let index = index"
+      class="driver-card"
+      [style.animationDelay.ms]="index * 70"
+    >
+
+      <!-- CARD HEADER -->
+      <div class="driver-card-header">
+
+        <div class="driver-profile">
+
+          <div class="driver-avatar">
+
+            <img
+              *ngIf="driver.image"
+              [src]="driver.image"
+              [alt]="driver.driverName"
+            />
+
+            <span *ngIf="!driver.image">
+              {{
+                driver.driverName
+                  ? driver.driverName.charAt(0).toUpperCase()
+                  : 'D'
+              }}
+            </span>
+
+          </div>
+
+          <div class="driver-identity">
+            <h2>{{ driver.driverName }}</h2>
+
+            <p>
+              {{ driver.licenseNumber }}
+            </p>
+          </div>
+
+        </div>
+
+        <span
+          class="driver-status"
+          [ngClass]="{
+            'status-badge-available':
+              driver.availabilityStatus === 'Available',
+            'status-badge-busy':
+              driver.availabilityStatus === 'Busy',
+            'status-badge-offline':
+              driver.availabilityStatus === 'Offline'
+          }"
+        >
+          <span class="status-dot"></span>
+          {{ driver.availabilityStatus }}
+        </span>
+
+      </div>
+
+      <!-- DRIVER DETAILS -->
+      <div class="driver-details">
+
+        <div class="driver-detail-item">
+          <lucide-icon name="briefcase-business"></lucide-icon>
+
+          <div>
+            <span>Experience</span>
+            <strong>
+              {{ driver.experienceYears }} Years
+            </strong>
+          </div>
+        </div>
+
+        <div class="driver-detail-item">
+          <lucide-icon name="phone"></lucide-icon>
+
+          <div>
+            <span>Contact</span>
+            <strong>{{ driver.contactNumber }}</strong>
+          </div>
+        </div>
+
+        <div class="driver-detail-item">
+          <lucide-icon name="car-front"></lucide-icon>
+
+          <div>
+            <span>Vehicle</span>
+            <strong>{{ driver.vehicleType }}</strong>
+          </div>
+        </div>
+
+        <div class="driver-detail-item">
+          <lucide-icon name="indian-rupee"></lucide-icon>
+
+          <div>
+            <span>Hourly Rate</span>
+            <strong>
+              ₹{{ driver.hourlyRate }} / hour
+            </strong>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- STATUS UPDATE -->
+      <div class="status-update-section">
+
+        <button
+          type="button"
+          class="status-update-trigger"
+          [class.status-menu-active]="
+            selectedDriverId === driver.driverId
+          "
+          (click)="toggleDropdown(driver.driverId)"
+        >
+          <span>
+            <lucide-icon name="refresh-cw"></lucide-icon>
+            Update Status
+          </span>
+
+          <lucide-icon
+            name="chevron-down"
+            class="status-trigger-arrow"
+          ></lucide-icon>
+        </button>
+
+        <div
+          *ngIf="selectedDriverId === driver.driverId"
+          class="status-menu"
+        >
+          <button
+            type="button"
+            [class.active-status]="
+              driver.availabilityStatus === 'Available'
+            "
+            (click)="updateStatus(driver, 'Available')"
+          >
+            <span class="menu-status-dot available-dot"></span>
+            Available
+          </button>
+
+          <button
+            type="button"
+            [class.active-status]="
+              driver.availabilityStatus === 'Busy'
+            "
+            (click)="updateStatus(driver, 'Busy')"
+          >
+            <span class="menu-status-dot busy-dot"></span>
+            Busy
+          </button>
+
+          <button
+            type="button"
+            [class.active-status]="
+              driver.availabilityStatus === 'Offline'
+            "
+            (click)="updateStatus(driver, 'Offline')"
+          >
+            <span class="menu-status-dot offline-dot"></span>
+            Offline
+          </button>
+        </div>
+
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="driver-card-actions">
+
+        <button
+          type="button"
+          class="edit-driver-button"
+          (click)="editDriver(driver.driverId)"
+        >
+          <lucide-icon name="square-pen"></lucide-icon>
+          <span>Edit</span>
+        </button>
+
+        <button
+          type="button"
+          class="delete-driver-button"
+          (click)="confirmDelete(driver.driverId)"
+        >
+          <lucide-icon name="trash-2"></lucide-icon>
+          <span>Delete</span>
+        </button>
+
+      </div>
+
+    </article>
+
+  </section>
+
+  <!-- ================= PAGINATION BAR ================= -->
+  <div
+    *ngIf="!isLoading && filteredDrivers.length > 0 && totalPages > 1"
+    class="drivers-pagination"
+  >
+
+    <button
+      type="button"
+      class="pagination-button"
+      [disabled]="currentPage === 1"
+      (click)="prevPage()"
+    >
+      <lucide-icon name="chevron-left"></lucide-icon>
+      <span>Prev</span>
+    </button>
+
+    <button
+      type="button"
+      *ngFor="let page of pagesArray"
+      class="pagination-number"
+      [class.active-page]="page === currentPage"
+      (click)="goToPage(page)"
+    >
+      {{ page }}
+    </button>
+
+    <button
+      type="button"
+      class="pagination-button"
+      [disabled]="currentPage === totalPages"
+      (click)="nextPage()"
+    >
+      <span>Next</span>
+      <lucide-icon name="chevron-right"></lucide-icon>
+    </button>
+
+  </div>
+
+</div>
+
+<!-- DELETE CONFIRMATION MODAL -->
+<div
+  *ngIf="showDeleteModal"
+  class="modal-overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="deleteModalTitle"
+>
+
+  <div class="delete-modal">
+
+    <button
+      type="button"
+      class="modal-close-button"
+      aria-label="Close delete confirmation"
+      [disabled]="isDeleting"
+      (click)="cancelDelete()"
+    >
+      <lucide-icon name="x"></lucide-icon>
+    </button>
+
+    <div class="delete-animation">
+      <div class="delete-ring"></div>
+
+      <div class="delete-icon">
+        <lucide-icon name="trash-2"></lucide-icon>
+      </div>
+    </div>
+
+    <p class="delete-modal-label">
+      Permanent Action
+    </p>
+
+    <h2
+      id="deleteModalTitle"
+      class="delete-modal-title"
+    >
+      Delete Driver?
+    </h2>
+
+    <p class="delete-modal-description">
+      Are you sure you want to delete this driver? This action
+      cannot be undone.
+    </p>
+
+    <div class="delete-modal-actions">
+
+      <button
+        type="button"
+        class="modal-cancel-button"
+        [disabled]="isDeleting"
+        (click)="cancelDelete()"
+      >
+        Cancel
+      </button>
+
+      <button
+        type="button"
+        class="modal-delete-button"
+        [disabled]="isDeleting"
+        (click)="deleteDriver()"
+      >
+        <lucide-icon
+          *ngIf="!isDeleting"
+          name="trash-2"
+        ></lucide-icon>
+
+        <lucide-icon
+          *ngIf="isDeleting"
+          name="loader-circle"
+          class="button-spinner"
+        ></lucide-icon>
+
+        <span>
+          {{ isDeleting ? 'Deleting...' : 'Delete Driver' }}
+        </span>
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

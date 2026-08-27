@@ -1,0 +1,82 @@
+name: DriveEase CI
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+
+jobs:
+
+  # =====================================================
+  # Backend — Spring Boot Build
+  # =====================================================
+  backend:
+    name: Backend — Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build application
+        working-directory: springapp
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET || 'CI_BUILD_ONLY_SECRET_32_BYTES_!!' }}
+          DATABASE_URL: jdbc:h2:mem:testdb;MODE=MySQL;NON_KEYWORDS=USER
+          DATABASE_USERNAME: sa
+          DATABASE_PASSWORD: ''
+          MAIL_USERNAME: ''
+          MAIL_PASSWORD: ''
+          GEMINI_API_KEY: ''
+          RAZORPAY_KEY_ID: ''
+          RAZORPAY_KEY_SECRET: ''
+          CORS_ALLOWED_ORIGINS: http://localhost:4200
+        run: mvn clean package --no-transfer-progress
+
+      - name: Upload JAR artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: driveease-backend-jar
+          path: springapp/target/*.jar
+          retention-days: 7
+
+  # =====================================================
+  # Frontend — Angular Build (Vercel handles deployment)
+  # =====================================================
+  frontend:
+    name: Frontend — Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: angularapp/package-lock.json
+
+      - name: Install dependencies
+        working-directory: angularapp
+        run: npm ci
+
+      - name: Build production
+        working-directory: angularapp
+        run: npm run build -- --configuration production
+
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: driveease-frontend-dist
+          path: angularapp/dist/
+          retention-days: 7

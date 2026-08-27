@@ -1,0 +1,771 @@
+<!-- ================= FEEDBACK CONTAINER ================= -->
+
+<div
+  [ngClass]="isDarkMode
+    ? 'bg-[#050505] text-slate-200'
+    : 'bg-[#e7e3dc] text-[#25231f]'"
+  class="w-full h-full p-2 font-sans flex flex-col min-h-0 relative overflow-hidden transition-colors duration-500"
+>
+
+  <!-- ================= HEADER ================= -->
+
+  <div class="flex items-center gap-3 mb-6 px-2 shrink-0">
+
+    <div
+      [ngClass]="isDarkMode
+        ? 'bg-gradient-to-br from-red-600 to-orange-500 shadow-red-500/30'
+        : 'bg-gradient-to-br from-[#a9420c] via-[#c95812] to-[#dc7a39] shadow-[0_8px_18px_rgba(169,66,12,0.30)]'"
+      class="p-2 rounded-lg shadow-lg"
+    >
+      <svg
+        class="w-5 h-5 text-white"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+        ></path>
+      </svg>
+    </div>
+
+    <h2
+      [ngClass]="isDarkMode ? 'text-white' : 'text-[#25231f]'"
+      class="text-2xl font-bold tracking-wide"
+    >
+      My
+
+      <span
+        [ngClass]="isDarkMode
+          ? 'from-red-500 to-orange-400'
+          : 'from-[#a9420c] via-[#c95812] to-[#dc7a39]'"
+        class="bg-gradient-to-r bg-clip-text text-transparent"
+      >
+        Feedback
+      </span>
+    </h2>
+
+  </div>
+
+  <!-- ================= LOADER ================= -->
+
+  <div
+    *ngIf="isLoading"
+    class="feedback-loader-container flex-1 min-h-0 w-full flex flex-col items-center justify-center gap-6"
+  >
+
+    <div class="feedback-loader">
+
+      <!-- Rotating outer ring -->
+
+      <div
+        [ngClass]="isDarkMode
+          ? 'feedback-loader-dark'
+          : 'feedback-loader-light'"
+        class="feedback-loader-ring"
+      ></div>
+
+      <!-- Loader ticks -->
+
+      <div class="feedback-loader-ticks">
+
+        <span
+          class="feedback-loader-tick"
+          [ngClass]="isDarkMode ? 'feedback-tick-dark' : 'feedback-tick-light'"
+          style="--tick-index: 0"
+        ></span>
+
+        <span
+          class="feedback-loader-tick"
+          [ngClass]="isDarkMode ? 'feedback-tick-dark' : 'feedback-tick-light'"
+          style="--tick-index: 1"
+        ></span>
+
+        <span
+          class="feedback-loader-tick"
+          [ngClass]="isDarkMode ? 'feedback-tick-dark' : 'feedback-tick-light'"
+          style="--tick-index: 2"
+        ></span>
+
+        <span
+          class="feedback-loader-tick"
+          [ngClass]="isDarkMode ? 'feedback-tick-dark' : 'feedback-tick-light'"
+          style="--tick-index: 3"
+        ></span>
+
+        <span
+          class="feedback-loader-tick"
+          [ngClass]="isDarkMode ? 'feedback-tick-dark' : 'feedback-tick-light'"
+          style="--tick-index: 4"
+        ></span>
+
+        <span
+          class="feedback-loader-tick"
+          [ngClass]="isDarkMode ? 'feedback-tick-dark' : 'feedback-tick-light'"
+          style="--tick-index: 5"
+        ></span>
+
+        <span
+          class="feedback-loader-tick"
+          [ngClass]="isDarkMode ? 'feedback-tick-dark' : 'feedback-tick-light'"
+          style="--tick-index: 6"
+        ></span>
+
+        <span
+          class="feedback-loader-tick"
+          [ngClass]="isDarkMode ? 'feedback-tick-dark' : 'feedback-tick-light'"
+          style="--tick-index: 7"
+        ></span>
+
+      </div>
+
+      <!-- Rotating arrows -->
+
+      <div class="feedback-arrow-rotation">
+
+        <div class="feedback-arrow-group">
+
+          <span
+            [ngClass]="isDarkMode
+              ? 'feedback-arrow-red-dark'
+              : 'feedback-arrow-red-light'"
+            class="feedback-arrow feedback-arrow-top"
+          ></span>
+
+          <span
+            [ngClass]="isDarkMode
+              ? 'feedback-arrow-white-dark'
+              : 'feedback-arrow-white-light'"
+            class="feedback-arrow feedback-arrow-bottom"
+          ></span>
+
+        </div>
+
+      </div>
+
+      <!-- Center mask -->
+
+      <div
+        [ngClass]="isDarkMode
+          ? 'bg-[#050505]'
+          : 'bg-[#e7e3dc]'"
+        class="feedback-loader-center"
+      ></div>
+
+    </div>
+
+    <!-- Loader text -->
+
+    <div class="flex flex-col items-center gap-1 text-center">
+
+      <span
+        [ngClass]="isDarkMode ? 'text-white' : 'text-[#25231f]'"
+        class="text-sm font-bold tracking-wider uppercase"
+      >
+        Loading Feedback
+      </span>
+
+      <span
+        [ngClass]="isDarkMode ? 'text-slate-400' : 'text-[#686158]'"
+        class="text-[11px] font-medium flex items-center gap-1"
+      >
+        Please wait
+
+        <span class="flex items-center gap-1 ml-1">
+
+          <span
+            [ngClass]="isDarkMode ? 'bg-red-400' : 'bg-[#a9420c]'"
+            class="feedback-loading-dot"
+          ></span>
+
+          <span
+            [ngClass]="isDarkMode ? 'bg-orange-400' : 'bg-[#c95812]'"
+            class="feedback-loading-dot feedback-loading-dot-two"
+          ></span>
+
+          <span
+            [ngClass]="isDarkMode ? 'bg-red-400' : 'bg-[#dc7a39]'"
+            class="feedback-loading-dot feedback-loading-dot-three"
+          ></span>
+
+        </span>
+      </span>
+
+    </div>
+
+  </div>
+
+  <!-- ================= NO DATA STATE ================= -->
+
+  <div
+    *ngIf="!isLoading && feedbacks.length === 0"
+    [ngClass]="isDarkMode
+      ? 'bg-white/5 border-white/10 text-slate-400'
+      : 'bg-[#f0ece5] border-[#cec7bd] text-[#686158]'"
+    class="flex-1 min-h-0 flex flex-col items-center justify-center p-10 border rounded-2xl backdrop-blur-sm transition-colors duration-500"
+  >
+
+    <svg
+      [ngClass]="isDarkMode
+        ? 'text-white/20'
+        : 'text-[#c95812]/40'"
+      class="w-12 h-12 mb-3"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="1.5"
+        d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+      ></path>
+    </svg>
+
+    <p class="text-sm font-medium tracking-wide">
+      No Feedback Found
+    </p>
+
+  </div>
+
+  <!-- ================= FEEDBACK TABLE ================= -->
+
+  <div
+    *ngIf="!isLoading && feedbacks.length > 0"
+    [ngClass]="isDarkMode
+      ? 'bg-black/20 border-white/10 shadow-black/40'
+      : 'bg-[#f0ece5]/95 border-[#cec7bd] shadow-[0_18px_40px_rgba(37,35,31,0.15)]'"
+    class="flex-1 min-h-0 w-full border rounded-2xl overflow-hidden backdrop-blur-md shadow-2xl flex flex-col transition-colors duration-500"
+  >
+
+    <div class="w-full overflow-auto custom-scrollbar flex-1">
+
+      <table class="w-full min-w-[780px] text-left border-collapse">
+
+        <!-- Table header -->
+
+        <thead
+          [ngClass]="isDarkMode
+            ? 'bg-[#1a1c20]/95 border-white/10 text-slate-400'
+            : 'bg-[#e1dbd2]/95 border-[#cec7bd] text-[#686158]'"
+          class="sticky top-0 backdrop-blur-xl border-b text-[11px] uppercase tracking-widest z-10 transition-colors duration-500"
+        >
+          <tr>
+
+            <th class="px-5 py-4 font-bold">
+              Category
+            </th>
+
+            <th class="px-5 py-4 font-bold text-center">
+              Rating
+            </th>
+
+            <th class="px-5 py-4 font-bold">
+              Feedback
+            </th>
+
+            <th class="px-5 py-4 font-bold">
+              Date
+            </th>
+
+            <th class="px-5 py-4 font-bold text-center">
+              Action
+            </th>
+
+          </tr>
+        </thead>
+
+        <!-- Table body -->
+
+        <tbody
+          [ngClass]="isDarkMode
+            ? 'divide-white/5'
+            : 'divide-[#cec7bd]'"
+          class="divide-y"
+        >
+
+          <tr
+            *ngFor="let feedback of pagedFeedbacks"
+            [ngClass]="isDarkMode
+              ? 'hover:bg-white/[0.03]'
+              : 'hover:bg-[#e7e3dc]'"
+            class="transition-colors group"
+          >
+
+            <!-- Category -->
+
+            <td
+              [ngClass]="isDarkMode ? 'text-white' : 'text-[#25231f]'"
+              class="px-5 py-4 text-sm font-medium whitespace-nowrap"
+            >
+              {{ feedback.category || 'N/A' }}
+            </td>
+
+            <!-- Rating -->
+
+            <td class="px-5 py-4 text-sm text-center whitespace-nowrap">
+
+              <div
+                [ngClass]="isDarkMode
+                  ? 'bg-orange-500/10 text-orange-400 border-orange-500/20'
+                  : 'bg-[#f1dccb] text-[#a9420c] border-[#c95812]/40'"
+                class="inline-flex items-center gap-1 px-2 py-1 rounded-md border font-bold"
+              >
+                {{ feedback.rating || 0 }}
+
+                <svg
+                  class="w-3.5 h-3.5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                  ></path>
+                </svg>
+
+              </div>
+
+            </td>
+
+            <!-- Feedback text -->
+
+            <td
+              [ngClass]="isDarkMode
+                ? 'text-slate-300'
+                : 'text-[#545047]'"
+              class="px-5 py-4 text-sm max-w-[320px]"
+            >
+              <p class="line-clamp-3 break-words">
+                {{ feedback.feedbackText || 'No feedback message' }}
+              </p>
+            </td>
+
+            <!-- Date -->
+
+            <td
+              [ngClass]="isDarkMode
+                ? 'text-slate-400'
+                : 'text-[#686158]'"
+              class="px-5 py-4 text-sm whitespace-nowrap"
+            >
+              {{ feedback.date || 'N/A' }}
+            </td>
+
+            <!-- Actions -->
+
+            <td class="px-5 py-4 whitespace-nowrap text-center">
+
+              <div class="flex items-center justify-center gap-2">
+
+                <button
+                  type="button"
+                  [ngClass]="isDarkMode
+                    ? 'bg-white/5 hover:bg-white/10 border-white/10 text-white'
+                    : 'bg-[#e7e3dc] hover:bg-[#f1dccb] border-[#cec7bd] hover:border-[#c95812] text-[#545047] hover:text-[#a9420c]'"
+                  class="px-3 py-1.5 border text-xs font-medium rounded-lg transition-all duration-300 cursor-pointer"
+                  (click)="viewDriverInfo(feedback)"
+                >
+                  Driver Info
+                </button>
+
+                <button
+                  type="button"
+                  [ngClass]="isDarkMode
+                    ? 'bg-red-500/10 hover:bg-red-500/30 border-red-500/20 text-red-400 hover:text-red-300'
+                    : 'bg-red-100/60 hover:bg-red-200/70 border-red-500/30 text-red-700 hover:text-red-800'"
+                  class="px-3 py-1.5 border text-xs font-medium rounded-lg transition-all duration-300 flex items-center gap-1 cursor-pointer"
+                  (click)="askDelete(feedback.feedbackId)"
+                >
+
+                  <svg
+                    class="w-3.5 h-3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    ></path>
+                  </svg>
+
+                  Delete
+                </button>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <!-- ================= PAGINATION BAR ================= -->
+    <!-- pr-24 keeps the Next button clear of the floating chat button -->
+
+    <div
+      [ngClass]="isDarkMode
+        ? 'border-white/10 bg-[#1a1c20]/80 text-slate-400'
+        : 'border-[#cec7bd] bg-[#e1dbd2]/80 text-[#686158]'"
+      class="shrink-0 border-t pl-4 pr-4 sm:pr-24 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 transition-colors duration-500"
+    >
+
+      <!-- Showing X of Y -->
+      <span class="text-xs font-medium">
+        Showing
+        {{ (currentPage - 1) * pageSize + 1 }}
+        -
+        {{ (currentPage - 1) * pageSize + pagedFeedbacks.length }}
+        of {{ feedbacks.length }}
+      </span>
+
+      <!-- Page controls -->
+      <div class="flex items-center gap-1.5">
+
+        <!-- Prev -->
+        <button
+          type="button"
+          (click)="prevPage()"
+          [disabled]="currentPage === 1"
+          [ngClass]="isDarkMode
+            ? 'bg-white/5 hover:bg-white/10 border-white/10 text-white'
+            : 'bg-[#f0ece5] hover:bg-[#f1dccb] border-[#cec7bd] text-[#545047]'"
+          class="px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+        >
+          Prev
+        </button>
+
+        <!-- Page numbers -->
+        <button
+          type="button"
+          *ngFor="let p of pageNumbers"
+          (click)="goToPage(p)"
+          [ngClass]="p === currentPage
+            ? (isDarkMode
+                ? 'bg-gradient-to-r from-red-600 to-orange-500 text-white border-transparent'
+                : 'bg-gradient-to-r from-[#a9420c] via-[#c95812] to-[#dc7a39] text-white border-transparent')
+            : (isDarkMode
+                ? 'bg-white/5 hover:bg-white/10 border-white/10 text-slate-300'
+                : 'bg-[#f0ece5] hover:bg-[#f1dccb] border-[#cec7bd] text-[#545047]')"
+          class="min-w-[32px] px-2.5 py-1.5 text-xs font-bold rounded-lg border transition-all cursor-pointer"
+        >
+          {{ p }}
+        </button>
+
+        <!-- Next -->
+        <button
+          type="button"
+          (click)="nextPage()"
+          [disabled]="currentPage === totalPages"
+          [ngClass]="isDarkMode
+            ? 'bg-white/5 hover:bg-white/10 border-white/10 text-white'
+            : 'bg-[#f0ece5] hover:bg-[#f1dccb] border-[#cec7bd] text-[#545047]'"
+          class="px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+        >
+          Next
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ================= DRIVER INFO MODAL ================= -->
+
+<div
+  *ngIf="showDriverModal"
+  [ngClass]="isDarkMode
+    ? 'bg-black/70'
+    : 'bg-[#25231f]/55'"
+  class="absolute inset-0 z-[100] flex items-center justify-center backdrop-blur-sm p-3 sm:p-6 rounded-[2rem] pointer-events-auto"
+  (click)="closeDriverModal()"
+>
+
+  <div
+    (click)="$event.stopPropagation()"
+    [ngClass]="isDarkMode
+      ? 'bg-[#1a1c20] border-white/10'
+      : 'bg-[#f0ece5] border-[#c95812]/35'"
+    class="w-full max-w-sm max-h-full overflow-y-auto custom-scrollbar border rounded-3xl p-5 sm:p-6 shadow-2xl animate-fade-in relative transition-colors duration-500"
+  >
+
+    <!-- Decorative glow -->
+
+    <div
+      [ngClass]="isDarkMode
+        ? 'bg-orange-500/20'
+        : 'bg-[#c95812]/15'"
+      class="absolute -top-10 -right-10 w-32 h-32 rounded-full blur-[40px] pointer-events-none"
+    ></div>
+
+    <div
+      [ngClass]="isDarkMode
+        ? 'bg-red-500/20'
+        : 'bg-[#a9420c]/12'"
+      class="absolute -bottom-10 -left-10 w-32 h-32 rounded-full blur-[40px] pointer-events-none"
+    ></div>
+
+    <!-- Modal header -->
+
+    <div class="flex justify-between items-center mb-5 relative z-10">
+
+      <h4
+        [ngClass]="isDarkMode ? 'text-white' : 'text-[#25231f]'"
+        class="text-lg font-bold tracking-wide"
+      >
+        Driver Information
+      </h4>
+
+      <button
+        type="button"
+        [ngClass]="isDarkMode
+          ? 'text-slate-400 hover:text-red-400 bg-white/5 hover:bg-red-500/10'
+          : 'text-[#686158] hover:text-white bg-[#e1dbd2] hover:bg-[#a9420c]'"
+        class="transition-colors p-1 rounded-full cursor-pointer"
+        (click)="closeDriverModal()"
+      >
+        <svg
+          class="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          ></path>
+        </svg>
+      </button>
+
+    </div>
+
+    <!-- Divider -->
+
+    <div
+      [ngClass]="isDarkMode ? 'via-white/10' : 'via-[#cec7bd]'"
+      class="w-full h-px bg-gradient-to-r from-transparent to-transparent mb-5 relative z-10"
+    ></div>
+
+    <!-- Modal details -->
+
+    <div class="space-y-4 text-sm relative z-10">
+
+      <!-- Name -->
+
+      <div
+        [ngClass]="isDarkMode
+          ? 'bg-white/5 border-white/5'
+          : 'bg-[#e7e3dc] border-[#cec7bd]'"
+        class="flex justify-between items-center gap-4 p-3 rounded-xl border"
+      >
+        <span
+          [ngClass]="isDarkMode ? 'text-slate-400' : 'text-[#686158]'"
+          class="text-xs uppercase tracking-widest font-semibold"
+        >
+          Name
+        </span>
+
+        <span
+          [ngClass]="isDarkMode ? 'text-white' : 'text-[#25231f]'"
+          class="font-bold text-right"
+        >
+          {{ selectedDriver?.driverName || 'N/A' }}
+        </span>
+      </div>
+
+      <!-- Vehicle -->
+
+      <div
+        [ngClass]="isDarkMode
+          ? 'bg-white/5 border-white/5'
+          : 'bg-[#e7e3dc] border-[#cec7bd]'"
+        class="flex justify-between items-center gap-4 p-3 rounded-xl border"
+      >
+        <span
+          [ngClass]="isDarkMode ? 'text-slate-400' : 'text-[#686158]'"
+          class="text-xs uppercase tracking-widest font-semibold"
+        >
+          Vehicle
+        </span>
+
+        <span
+          [ngClass]="isDarkMode ? 'text-slate-200' : 'text-[#25231f]'"
+          class="font-medium text-right"
+        >
+          {{ selectedDriver?.vehicleType || 'N/A' }}
+        </span>
+      </div>
+
+      <!-- Experience -->
+
+      <div
+        [ngClass]="isDarkMode
+          ? 'bg-white/5 border-white/5'
+          : 'bg-[#e7e3dc] border-[#cec7bd]'"
+        class="flex justify-between items-center gap-4 p-3 rounded-xl border"
+      >
+        <span
+          [ngClass]="isDarkMode ? 'text-slate-400' : 'text-[#686158]'"
+          class="text-xs uppercase tracking-widest font-semibold"
+        >
+          Experience
+        </span>
+
+        <span
+          [ngClass]="isDarkMode ? 'text-slate-200' : 'text-[#25231f]'"
+          class="font-medium text-right"
+        >
+          {{ selectedDriver?.experienceYears || '0' }} Yrs
+        </span>
+      </div>
+
+      <!-- Contact -->
+
+      <div
+        [ngClass]="isDarkMode
+          ? 'bg-white/5 border-white/5'
+          : 'bg-[#e7e3dc] border-[#cec7bd]'"
+        class="flex justify-between items-center gap-4 p-3 rounded-xl border"
+      >
+        <span
+          [ngClass]="isDarkMode ? 'text-slate-400' : 'text-[#686158]'"
+          class="text-xs uppercase tracking-widest font-semibold"
+        >
+          Contact
+        </span>
+
+        <span
+          [ngClass]="isDarkMode ? 'text-slate-200' : 'text-[#25231f]'"
+          class="font-medium text-right"
+        >
+          {{ selectedDriver?.contactNumber || 'N/A' }}
+        </span>
+      </div>
+
+      <!-- Hourly rate -->
+
+      <div
+        [ngClass]="isDarkMode
+          ? 'bg-red-500/10 border-red-500/20'
+          : 'bg-[#f1dccb] border-[#c95812]/40'"
+        class="flex justify-between items-center gap-4 p-3 rounded-xl border"
+      >
+        <span
+          [ngClass]="isDarkMode ? 'text-red-400' : 'text-[#a9420c]'"
+          class="text-xs uppercase tracking-widest font-semibold"
+        >
+          Hourly Rate
+        </span>
+
+        <span
+          [ngClass]="isDarkMode ? 'text-red-400' : 'text-[#a9420c]'"
+          class="font-extrabold text-base"
+        >
+          ₹{{ selectedDriver?.hourlyRate || '0' }}
+        </span>
+      </div>
+
+    </div>
+
+    <!-- Modal close button -->
+
+    <button
+      type="button"
+      [ngClass]="isDarkMode
+        ? 'bg-white/5 hover:bg-white/10 border-white/10 text-white'
+        : 'bg-gradient-to-r from-[#a9420c] via-[#c95812] to-[#dc7a39] border-[#c95812] text-white hover:shadow-[0_10px_25px_rgba(169,66,12,0.35)]'"
+      class="w-full mt-6 py-3 border font-bold rounded-xl transition-all duration-300 relative z-10 cursor-pointer"
+      (click)="closeDriverModal()"
+    >
+      Done
+    </button>
+
+  </div>
+
+</div>
+
+<!-- ================= DELETE CONFIRMATION MODAL ================= -->
+
+<div
+  *ngIf="showDeleteModal"
+  [ngClass]="isDarkMode ? 'bg-black/70' : 'bg-[#25231f]/55'"
+  class="absolute inset-0 z-[110] flex items-center justify-center backdrop-blur-sm p-3 sm:p-6 rounded-[2rem] pointer-events-auto"
+  (click)="cancelDelete()"
+>
+
+  <div
+    (click)="$event.stopPropagation()"
+    [ngClass]="isDarkMode ? 'bg-[#1a1c20] border-red-500/30' : 'bg-[#f0ece5] border-red-700/30'"
+    class="w-full max-w-sm border rounded-3xl overflow-hidden shadow-2xl animate-fade-in text-center relative"
+  >
+
+    <div class="pt-7 pb-2 flex justify-center">
+      <div
+        [ngClass]="isDarkMode ? 'bg-red-500/15 text-red-400 border-red-500/30' : 'bg-[#f1dccb] text-[#a9420c] border-[#c95812]/40'"
+        class="w-16 h-16 rounded-full flex items-center justify-center border-2 shadow-lg"
+      >
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+        </svg>
+      </div>
+    </div>
+
+    <div class="px-6 pb-2">
+      <h3 [ngClass]="isDarkMode ? 'text-white' : 'text-[#25231f]'" class="text-xl font-extrabold mt-2">
+        Delete Feedback?
+      </h3>
+      <p [ngClass]="isDarkMode ? 'text-slate-400' : 'text-[#686158]'" class="text-sm mt-2">
+        Are you sure you want to delete this feedback? This action cannot be undone.
+      </p>
+    </div>
+
+    <div
+      [ngClass]="isDarkMode ? 'border-white/10 bg-black/30' : 'border-[#cec7bd] bg-[#e7e3dc]'"
+      class="px-6 py-4 border-t flex gap-3 mt-4"
+    >
+      <button
+        type="button"
+        (click)="cancelDelete()"
+        [ngClass]="isDarkMode ? 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10' : 'bg-[#f0ece5] text-[#545047] border-[#cec7bd] hover:bg-[#f1dccb]'"
+        class="flex-1 py-2.5 text-xs font-bold rounded-lg border transition-colors cursor-pointer"
+      >
+        Cancel
+      </button>
+
+      <button
+        type="button"
+        (click)="confirmDelete()"
+        [ngClass]="isDarkMode ? 'from-red-600 to-orange-500 shadow-[0_0_20px_-5px_rgba(239,68,68,0.5)]' : 'from-[#a9420c] via-[#c95812] to-[#dc7a39] shadow-[0_10px_25px_rgba(169,66,12,0.30)]'"
+        class="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 text-xs font-extrabold text-white rounded-lg bg-gradient-to-r hover:-translate-y-0.5 transition-all cursor-pointer"
+      >
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+        </svg>
+        Delete
+      </button>
+    </div>
+
+  </div>
+
+</div>

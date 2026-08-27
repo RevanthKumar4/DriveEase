@@ -1,0 +1,290 @@
+<aside
+  class="admin-sidebar"
+  [class.sidebar-collapsed]="isSidebarCollapsed"
+>
+  <button
+    type="button"
+    class="sidebar-toggle-button"
+    [class.toggle-collapsed]="isSidebarCollapsed"
+    (click)="toggleSidebar()"
+    [attr.aria-expanded]="!isSidebarCollapsed"
+    [attr.aria-label]="isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+    [title]="isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+  >
+    <span class="toggle-panel-line"></span>
+
+    <svg
+      class="toggle-arrow"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M14 6l-6 6 6 6"></path>
+    </svg>
+  </button>
+
+  <!-- BRAND -->
+
+  <div class="sidebar-brand">
+    <a
+      routerLink="/admin/home"
+      class="brand-link"
+      title="DriveU Admin Console"
+    >
+      <span class="brand-icon">D</span>
+
+      <span class="brand-content">
+        <span class="brand-name">
+          Drive<span>U</span>
+        </span>
+
+        <span class="brand-subtitle">
+          Admin Console
+        </span>
+      </span>
+    </a>
+  </div>
+
+  <!-- WORKSPACE -->
+
+  <div class="sidebar-section">
+    <p class="section-label">Workspace</p>
+
+    <nav class="sidebar-navigation">
+
+      <!-- DASHBOARD -->
+
+      <a
+        routerLink="/admin/home"
+        routerLinkActive="active-nav-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-link"
+        title="Dashboard"
+      >
+        <span class="nav-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+            <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+            <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+            <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+          </svg>
+        </span>
+
+        <span class="nav-text">Dashboard</span>
+      </a>
+
+      <!-- ADD DRIVER -->
+
+      <a
+        routerLink="/admin/add-driver"
+        routerLinkActive="active-nav-link"
+        class="nav-link"
+        title="Add Driver"
+      >
+        <span class="nav-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="9" cy="8" r="4"></circle>
+            <path d="M3 21v-2a6 6 0 0 1 6-6"></path>
+            <path d="M16 11v6"></path>
+            <path d="M13 14h6"></path>
+          </svg>
+        </span>
+
+        <span class="nav-text">Add Driver</span>
+      </a>
+
+      <!-- DRIVERS -->
+
+      <a
+        routerLink="/admin/drivers"
+        routerLinkActive="active-nav-link"
+        class="nav-link"
+        title="Drivers"
+      >
+        <span class="nav-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="8" r="4"></circle>
+            <path d="M4 21v-2a8 8 0 0 1 16 0v2"></path>
+          </svg>
+        </span>
+
+        <span class="nav-text">Drivers</span>
+      </a>
+
+      <!-- REQUESTS -->
+
+      <a
+        routerLink="/admin/requests"
+        routerLinkActive="active-nav-link"
+        class="nav-link"
+        title="Requests"
+      >
+        <span class="nav-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M9 11l3 3L22 4"></path>
+            <path
+              d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"
+            ></path>
+          </svg>
+        </span>
+
+        <span class="nav-text">Requests</span>
+      </a>
+
+      <!-- FEEDBACK -->
+
+      <a
+        routerLink="/admin/feedback"
+        routerLinkActive="active-nav-link"
+        class="nav-link"
+        title="Feedback"
+      >
+        <span class="nav-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path
+              d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"
+            ></path>
+            <path d="M8 9h8"></path>
+            <path d="M8 13h5"></path>
+          </svg>
+        </span>
+
+        <span class="nav-text">Feedback</span>
+      </a>
+
+    </nav>
+  </div>
+
+  <!-- SIDEBAR BOTTOM -->
+
+  <div class="sidebar-bottom">
+
+    <!-- SYSTEM STATUS -->
+
+    <div class="system-status-card">
+      <div class="status-heading">
+        <span class="status-dot"></span>
+        <span>System Connected</span>
+      </div>
+
+      <p class="status-title">
+        DriveU Services
+      </p>
+
+      <p class="status-description">
+        Administrator workspace active
+      </p>
+    </div>
+
+    <!-- ADMIN PROFILE -->
+
+    <div class="admin-profile">
+      <div class="profile-avatar">
+        {{ username ? username.charAt(0).toUpperCase() : 'A' }}
+      </div>
+
+      <div class="profile-details">
+        <p class="profile-name">
+          {{ username }}
+        </p>
+
+        <p class="profile-role">
+          {{ role }}
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="logout-icon-button"
+        (click)="logout()"
+        title="Logout"
+        aria-label="Logout"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M10 17l5-5-5-5"></path>
+          <path d="M15 12H3"></path>
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- RESPONSIVE LOGOUT BUTTON -->
+
+    <button
+      type="button"
+      class="logout-button"
+      (click)="logout()"
+      title="Logout"
+      aria-label="Logout"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M10 17l5-5-5-5"></path>
+        <path d="M15 12H3"></path>
+        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+      </svg>
+
+      <span>Logout</span>
+    </button>
+
+  </div>
+</aside>

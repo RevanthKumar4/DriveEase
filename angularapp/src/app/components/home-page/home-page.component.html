@@ -1,0 +1,639 @@
+<div
+  [ngClass]="
+    isDarkMode
+      ? 'bg-black text-slate-200'
+      : 'bg-[#e7e3dc] text-[#25231f]'
+  "
+  class="absolute inset-0 z-40 overflow-hidden font-sans selection:bg-[#c95812]/30 transition-colors duration-500"
+>
+  <!-- ========================================================= -->
+  <!-- LIVE MAP BACKGROUND -->
+  <!-- ========================================================= -->
+
+  <iframe
+    *ngIf="backgroundMapUrl && locationAllowed"
+    class="pointer-events-none absolute inset-0 h-full w-full"
+    [src]="backgroundMapUrl"
+    [style.filter]="
+      isDarkMode
+        ? 'grayscale(40%) brightness(0.55) contrast(1.15)'
+        : 'grayscale(35%) sepia(8%) brightness(0.82) contrast(0.88)'
+    "
+    style="border: 0"
+    loading="lazy"
+  ></iframe>
+
+  <!-- ========================================================= -->
+  <!-- FALLBACK BACKGROUND IMAGE -->
+  <!-- ========================================================= -->
+
+  <div
+    *ngIf="!locationAllowed"
+    class="pointer-events-none absolute inset-0 bg-cover bg-center"
+    [style.filter]="
+      isDarkMode
+        ? 'grayscale(30%) brightness(0.55) contrast(1.1)'
+        : 'grayscale(30%) sepia(10%) brightness(0.78) contrast(0.9)'
+    "
+    style="
+      background-image: url('https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=2000&q=80');
+    "
+  ></div>
+
+  <!-- ========================================================= -->
+  <!-- BACKGROUND OVERLAYS -->
+  <!-- ========================================================= -->
+
+  <div
+    class="pointer-events-none absolute inset-0 transition-opacity duration-500"
+    [ngClass]="
+      isDarkMode
+        ? 'bg-gradient-to-b from-black/80 via-black/50 to-black/85'
+        : 'bg-gradient-to-b from-[#d6d0c7]/95 via-[#e7e3dc]/75 to-[#d6d0c7]/95'
+    "
+  ></div>
+
+  <div
+    class="pointer-events-none absolute inset-0 transition-opacity duration-500"
+    [ngClass]="
+      isDarkMode
+        ? 'bg-[radial-gradient(ellipse_at_center,rgba(249,115,22,0.15),transparent_60%)]'
+        : 'bg-[radial-gradient(ellipse_at_center,rgba(201,88,18,0.10),transparent_65%)]'
+    "
+  ></div>
+
+  <!-- Warm Stone decorative glow -->
+
+  <div
+    *ngIf="!isDarkMode"
+    class="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-[#c95812]/[0.06] blur-3xl"
+  ></div>
+
+  <div
+    *ngIf="!isDarkMode"
+    class="pointer-events-none absolute -bottom-40 -right-32 h-[28rem] w-[28rem] rounded-full bg-[#a9420c]/[0.05] blur-3xl"
+  ></div>
+
+  <!-- ========================================================= -->
+  <!-- HOME DASHBOARD -->
+  <!-- ========================================================= -->
+
+  <div
+    class="absolute inset-0 z-30 flex flex-col items-center justify-center overflow-y-auto px-3 pb-4 pt-3 transition-all duration-700 ease-in-out sm:px-5 md:px-6 lg:overflow-hidden"
+    [class.opacity-0]="activeView !== 'home'"
+    [class.scale-90]="activeView !== 'home'"
+    [class.pointer-events-none]="activeView !== 'home'"
+  >
+    <div
+      class="grid w-full max-w-7xl grid-cols-1 items-stretch gap-4 sm:gap-6 lg:h-full lg:min-h-0 lg:max-h-full lg:grid-cols-[minmax(240px,300px)_1fr] lg:gap-8 lg:overflow-hidden"
+    >
+      <!-- ===================================================== -->
+      <!-- LEFT COLUMN -->
+      <!-- ===================================================== -->
+
+      <div
+        class="order-2 flex flex-col gap-3 p-1 sm:gap-4 lg:order-1 lg:h-full lg:min-h-0 lg:max-h-full lg:gap-5"
+      >
+        <!-- =================================================== -->
+        <!-- CURRENT AREA WIDGET -->
+        <!-- =================================================== -->
+
+        <div
+          [ngClass]="
+            isDarkMode
+              ? 'bg-[#1a1c20]/85 border-white/10 hover:border-orange-500/50 hover:shadow-[0_20px_50px_-10px_rgba(249,115,22,0.45)]'
+              : 'bg-[#f0ece5]/95 border-[#cec7bd] hover:border-[#c95812]/70 hover:shadow-[0_20px_45px_-12px_rgba(169,66,12,0.28)]'
+          "
+          class="group relative min-h-[110px] flex-1 basis-0 cursor-pointer overflow-hidden rounded-2xl border shadow-xl backdrop-blur-xl transition-all duration-500 will-change-transform hover:-translate-y-1 sm:min-h-[120px] lg:min-h-0"
+        >
+          <div
+            class="pointer-events-none absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+            [style.filter]="
+              isDarkMode
+                ? 'brightness(0.50) saturate(1.1)'
+                : 'grayscale(15%) sepia(12%) brightness(0.68) saturate(0.85)'
+            "
+            style="
+              background-image: url('https://images.unsplash.com/photo-1573108724029-4c46571d6490?auto=format&fit=crop&w=1200&q=80');
+            "
+          ></div>
+
+          <div
+            class="pointer-events-none absolute inset-0"
+            [ngClass]="
+              isDarkMode
+                ? 'bg-gradient-to-t from-black/95 via-black/70 to-black/40'
+                : 'bg-gradient-to-t from-[#25231f]/95 via-[#4a4239]/65 to-[#25231f]/25'
+            "
+          ></div>
+
+          <div
+            class="relative z-10 flex h-full min-h-0 flex-col justify-between p-3 sm:p-4"
+          >
+            <div
+              class="flex items-center gap-2 transition-transform duration-500 group-hover:translate-x-1"
+            >
+              <div
+                [ngClass]="
+                  isDarkMode
+                    ? 'bg-orange-500 text-white shadow-[0_0_15px_rgba(249,115,22,0.6)]'
+                    : 'bg-[#c95812] text-white shadow-[0_0_15px_rgba(201,88,18,0.45)]'
+                "
+                class="shrink-0 rounded-lg p-1.5 transition-transform duration-500 group-hover:rotate-6 group-hover:scale-110"
+              >
+                <lucide-icon
+                  name="map-pin"
+                  class="h-4 w-4 animate-pulse"
+                ></lucide-icon>
+              </div>
+
+              <h3
+                class="truncate text-[10px] font-extrabold uppercase tracking-widest text-[#f0ece5] drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] sm:text-[11px]"
+              >
+                Current Area
+              </h3>
+            </div>
+
+            <div
+              class="min-w-0 transition-transform duration-500 group-hover:translate-x-1"
+            >
+              <h4
+                class="mb-0.5 truncate text-sm font-extrabold text-[#f0ece5] drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)] sm:text-base lg:text-lg"
+              >
+                {{ locationAllowed ? shortArea : 'Location denied' }}
+              </h4>
+
+              <p
+                class="truncate text-[10px] font-semibold text-[#e7e3dc] drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] sm:text-[11px]"
+              >
+                {{
+                  locationAllowed
+                    ? shortCity
+                    : 'Enable location permission in your browser'
+                }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- =================================================== -->
+        <!-- EXPAND MAP WIDGET -->
+        <!-- =================================================== -->
+
+        <div
+          (click)="openMap()"
+          [ngClass]="
+            isDarkMode
+              ? 'bg-[#1a1c20]/85 border-white/10 hover:border-orange-500/60 hover:shadow-[0_20px_50px_-10px_rgba(249,115,22,0.45)]'
+              : 'bg-[#f0ece5]/95 border-[#cec7bd] hover:border-[#c95812]/70 hover:shadow-[0_20px_45px_-12px_rgba(169,66,12,0.28)]'
+          "
+          class="group relative min-h-[110px] flex-1 basis-0 cursor-pointer overflow-hidden rounded-2xl border shadow-xl backdrop-blur-xl transition-all duration-500 will-change-transform hover:-translate-y-1 sm:min-h-[120px] lg:min-h-0"
+        >
+          <div
+            class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+            [style.filter]="
+              isDarkMode
+                ? 'brightness(0.65) saturate(1)'
+                : 'grayscale(20%) sepia(12%) brightness(0.72) saturate(0.85)'
+            "
+            style="
+              background-image: url('https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=1200&q=80');
+            "
+          ></div>
+
+          <div
+            class="absolute inset-0 transition-opacity duration-500"
+            [ngClass]="
+              isDarkMode
+                ? 'bg-gradient-to-t from-black/90 via-black/50 to-black/30'
+                : 'bg-gradient-to-t from-[#25231f]/90 via-[#4a4239]/55 to-[#25231f]/20'
+            "
+          ></div>
+
+          <div
+            class="absolute inset-0 z-10 flex flex-col items-center justify-center p-2 text-center"
+          >
+            <div
+              class="relative mb-1 transition-transform duration-500 group-hover:scale-110"
+            >
+              <div
+                [ngClass]="
+                  isDarkMode
+                    ? 'bg-orange-500/40'
+                    : 'bg-[#c95812]/35'
+                "
+                class="absolute inset-0 animate-ping rounded-full"
+              ></div>
+
+              <div
+                [ngClass]="
+                  isDarkMode
+                    ? 'from-orange-600 via-orange-500 to-amber-400 shadow-[0_0_20px_rgba(249,115,22,0.65)]'
+                    : 'from-[#a9420c] via-[#c95812] to-[#dc7a39] shadow-[0_0_20px_rgba(201,88,18,0.50)]'
+                "
+                class="relative flex h-9 w-9 items-center justify-center rounded-full border-2 border-[#f0ece5]/50 bg-gradient-to-br sm:h-11 sm:w-11"
+              >
+                <lucide-icon
+                  name="map-pinned"
+                  class="h-4 w-4 text-white drop-shadow-md sm:h-5 sm:w-5"
+                ></lucide-icon>
+              </div>
+            </div>
+
+            <span
+              class="mt-1 flex items-center gap-1 text-[10px] font-bold tracking-[0.25em] text-[#f0ece5] drop-shadow-md sm:text-[11px] sm:tracking-[0.3em]"
+            >
+              <lucide-icon
+                name="maximize-2"
+                [ngClass]="
+                  isDarkMode
+                    ? 'text-orange-300'
+                    : 'text-[#f1dccb]'
+                "
+                class="h-3 w-3"
+              ></lucide-icon>
+
+              EXPAND MAP
+            </span>
+
+            <span class="mt-0.5 text-[9px] text-[#e7e3dc]">
+              Click to view full map
+            </span>
+          </div>
+        </div>
+
+        <!-- =================================================== -->
+        <!-- CURRENT TIME WIDGET -->
+        <!-- =================================================== -->
+
+        <div
+          [ngClass]="
+            isDarkMode
+              ? 'bg-[#0f0a08]/90 border-orange-500/30 hover:border-orange-400 hover:shadow-[0_20px_50px_-10px_rgba(249,115,22,0.45)]'
+              : 'bg-[#f0ece5]/95 border-[#cec7bd] hover:border-[#c95812]/70 hover:shadow-[0_20px_45px_-12px_rgba(169,66,12,0.28)]'
+          "
+          class="group relative min-h-[110px] flex-1 basis-0 cursor-default overflow-hidden rounded-2xl border p-2.5 shadow-xl backdrop-blur-xl transition-all duration-500 will-change-transform hover:-translate-y-1 sm:min-h-[120px] sm:p-3 lg:min-h-0"
+        >
+          <!-- Grid background -->
+
+          <div
+            class="pointer-events-none absolute inset-0 opacity-20 transition-opacity duration-500 group-hover:opacity-30"
+            [style.background-image]="
+              isDarkMode
+                ? 'linear-gradient(rgba(249,115,22,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(249,115,22,0.4) 1px, transparent 1px)'
+                : 'linear-gradient(rgba(201,88,18,0.25) 1px, transparent 1px), linear-gradient(90deg, rgba(201,88,18,0.25) 1px, transparent 1px)'
+            "
+            style="background-size: 20px 20px"
+          ></div>
+
+          <!-- Top and bottom lines -->
+
+          <div
+            [ngClass]="
+              isDarkMode
+                ? 'via-orange-500'
+                : 'via-[#c95812]'
+            "
+            class="absolute inset-x-0 top-0 h-[2px] animate-pulse bg-gradient-to-r from-transparent to-transparent"
+          ></div>
+
+          <div
+            [ngClass]="
+              isDarkMode
+                ? 'via-amber-500'
+                : 'via-[#a9420c]'
+            "
+            class="absolute inset-x-0 bottom-0 h-[2px] animate-pulse bg-gradient-to-r from-transparent to-transparent"
+          ></div>
+
+          <!-- Corners -->
+
+          <div
+            [ngClass]="
+              isDarkMode
+                ? 'border-orange-500'
+                : 'border-[#c95812]'
+            "
+            class="absolute left-1.5 top-1.5 h-2.5 w-2.5 border-l-2 border-t-2 sm:h-3 sm:w-3"
+          ></div>
+
+          <div
+            [ngClass]="
+              isDarkMode
+                ? 'border-orange-500'
+                : 'border-[#c95812]'
+            "
+            class="absolute right-1.5 top-1.5 h-2.5 w-2.5 border-r-2 border-t-2 sm:h-3 sm:w-3"
+          ></div>
+
+          <div
+            [ngClass]="
+              isDarkMode
+                ? 'border-amber-500'
+                : 'border-[#a9420c]'
+            "
+            class="absolute bottom-1.5 left-1.5 h-2.5 w-2.5 border-b-2 border-l-2 sm:h-3 sm:w-3"
+          ></div>
+
+          <div
+            [ngClass]="
+              isDarkMode
+                ? 'border-amber-500'
+                : 'border-[#a9420c]'
+            "
+            class="absolute bottom-1.5 right-1.5 h-2.5 w-2.5 border-b-2 border-r-2 sm:h-3 sm:w-3"
+          ></div>
+
+          <div
+            class="relative z-10 flex h-full min-h-0 flex-col justify-between px-1 py-0.5"
+          >
+            <div class="flex items-center justify-between">
+              <lucide-icon
+                name="clock"
+                [ngClass]="
+                  isDarkMode
+                    ? 'text-orange-500'
+                    : 'text-[#c95812]'
+                "
+                class="h-4 w-4 transition-transform duration-500 group-hover:rotate-180"
+              ></lucide-icon>
+
+              <span
+                [ngClass]="
+                  isDarkMode
+                    ? 'text-orange-500/80'
+                    : 'text-[#a9420c]'
+                "
+                class="flex items-center gap-1 text-[9px] font-semibold tracking-widest"
+              >
+                <span
+                  class="h-1.5 w-1.5 animate-pulse rounded-full bg-green-600 shadow-[0_0_8px_rgba(22,163,74,0.65)]"
+                ></span>
+
+                LIVE
+              </span>
+            </div>
+
+            <div
+              class="min-w-0 py-0.5 text-center transition-transform duration-500 group-hover:scale-105"
+            >
+              <div
+                [ngClass]="
+                  isDarkMode
+                    ? 'from-orange-300 via-orange-400 to-red-500 drop-shadow-[0_0_15px_rgba(249,115,22,0.5)]'
+                    : 'from-[#a9420c] via-[#c95812] to-[#dc7a39] drop-shadow-[0_0_12px_rgba(201,88,18,0.22)]'
+                "
+                class="bg-gradient-to-r bg-clip-text font-mono text-2xl font-black leading-none tracking-wider text-transparent sm:text-3xl"
+              >
+                {{ currentTime }}
+              </div>
+
+              <div
+                [ngClass]="
+                  isDarkMode
+                    ? 'text-orange-400/80'
+                    : 'text-[#a9420c]'
+                "
+                class="mt-1 font-mono text-[9px] tracking-[0.35em] sm:text-[10px] sm:tracking-[0.4em]"
+              >
+                {{ currentSeconds }}
+
+                <span
+                  [ngClass]="
+                    isDarkMode
+                      ? 'text-amber-500'
+                      : 'text-[#c95812]'
+                  "
+                >
+                  •
+                </span>
+
+                {{ currentPeriod }}
+              </div>
+            </div>
+
+            <div
+              class="flex items-center justify-between gap-1 font-mono text-[9px]"
+            >
+              <span
+                [ngClass]="
+                  isDarkMode
+                    ? 'text-gray-400'
+                    : 'text-[#686158]'
+                "
+                class="truncate font-semibold tracking-wider"
+              >
+                {{ currentDate }}
+              </span>
+
+              <span
+                [ngClass]="
+                  isDarkMode
+                    ? 'text-orange-500'
+                    : 'text-[#a9420c]'
+                "
+                class="shrink-0 animate-pulse font-semibold tracking-widest"
+              >
+                ◉ ONLINE
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================================================== -->
+      <!-- RIGHT COLUMN -->
+      <!-- ===================================================== -->
+
+      <div
+        class="order-1 flex flex-col items-center justify-center overflow-hidden py-2 text-center lg:order-2 lg:h-full lg:min-h-0 lg:items-start lg:py-0 lg:pl-4 lg:text-left"
+      >
+        <!-- Greeting badge -->
+
+        <div
+          [ngClass]="
+            isDarkMode
+              ? 'bg-orange-500/10 border-orange-500/30'
+              : 'bg-[#f1dccb]/90 border-[#c95812]/30 shadow-[0_8px_20px_rgba(169,66,12,0.14)]'
+          "
+          class="mb-3 inline-flex items-center gap-2 rounded-full border px-3 py-1 backdrop-blur-md sm:mb-4"
+        >
+          <lucide-icon
+            name="sparkles"
+            [ngClass]="
+              isDarkMode
+                ? 'text-orange-500'
+                : 'text-[#c95812]'
+            "
+            class="h-3 w-3"
+          ></lucide-icon>
+
+          <span
+            [ngClass]="
+              isDarkMode
+                ? 'text-orange-300'
+                : 'text-[#a9420c]'
+            "
+            class="text-[10px] font-bold uppercase tracking-[0.3em]"
+          >
+            {{ greetingMessage }}
+          </span>
+        </div>
+
+        <!-- Heading -->
+
+        <h2
+          [ngClass]="
+            isDarkMode
+              ? 'text-white'
+              : 'text-[#25231f]'
+          "
+          class="text-2xl font-extrabold leading-[1.1] tracking-tight drop-shadow-md sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl"
+        >
+          Welcome to <br />
+
+          <span
+            [ngClass]="
+              isDarkMode
+                ? 'from-red-500 via-orange-500 to-orange-400'
+                : 'from-[#a9420c] via-[#c95812] to-[#dc7a39]'
+            "
+            class="bg-gradient-to-r bg-clip-text text-transparent"
+          >
+            DriveU
+          </span>
+        </h2>
+
+        <!-- Description -->
+
+        <p
+          [ngClass]="
+            isDarkMode
+              ? 'text-gray-300'
+              : 'text-[#545047]'
+          "
+          class="mt-3 max-w-xl px-2 text-xs font-medium leading-relaxed sm:mt-4 sm:text-sm md:text-base lg:px-0"
+        >
+          Your personal driver, one tap away. Book, track and rate rides,
+
+          <span
+            [ngClass]="
+              isDarkMode
+                ? 'text-orange-400'
+                : 'text-[#a9420c]'
+            "
+            class="font-bold"
+          >
+            fast, safe, and seamless.
+          </span>
+        </p>
+
+        <!-- Action buttons -->
+
+        <div
+          class="mt-4 flex flex-wrap justify-center gap-2 sm:mt-6 sm:gap-3 lg:justify-start"
+        >
+          <!-- Book driver -->
+
+          <a
+            routerLink="/customer/available-drivers"
+            [ngClass]="
+              isDarkMode
+                ? 'from-red-500/20 to-orange-500/20 border-orange-500/40 text-white hover:border-orange-400 hover:shadow-[0_0_20px_rgba(249,115,22,0.4)]'
+                : 'from-[#a9420c] via-[#c95812] to-[#dc7a39] border-[#c95812] text-white hover:border-[#a9420c] hover:shadow-[0_12px_28px_rgba(169,66,12,0.35)]'
+            "
+            class="flex cursor-pointer items-center gap-2 rounded-full border bg-gradient-to-r px-4 py-2 text-xs shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 sm:px-5 sm:py-2.5 sm:text-sm"
+          >
+            <lucide-icon
+              name="car"
+              [ngClass]="
+                isDarkMode
+                  ? 'text-orange-400'
+                  : 'text-white'
+              "
+              class="h-4 w-4"
+            ></lucide-icon>
+
+            <span class="font-semibold">
+              Book a Driver
+            </span>
+          </a>
+
+          <!-- Track ride -->
+
+          <a
+            routerLink="/customer/my-requests"
+            [ngClass]="
+              isDarkMode
+                ? 'bg-white/5 border-white/15 text-white hover:border-orange-400 hover:bg-white/10 hover:shadow-[0_0_20px_rgba(249,115,22,0.3)]'
+                : 'bg-[#f0ece5]/95 border-[#cec7bd] text-[#25231f] hover:border-[#c95812] hover:bg-[#f1dccb] hover:shadow-[0_12px_28px_rgba(169,66,12,0.22)]'
+            "
+            class="flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-xs shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 sm:px-5 sm:py-2.5 sm:text-sm"
+          >
+            <lucide-icon
+              name="navigation"
+              [ngClass]="
+                isDarkMode
+                  ? 'text-orange-500'
+                  : 'text-[#c95812]'
+              "
+              class="h-4 w-4"
+            ></lucide-icon>
+
+            <span class="font-semibold">
+              Track Ride
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- MAP MODAL -->
+  <!-- ========================================================= -->
+
+  <div
+    *ngIf="isMapExpanded"
+    [ngClass]="
+      isDarkMode
+        ? 'bg-black/90'
+        : 'bg-[#25231f]/60'
+    "
+    class="fixed inset-0 z-[100] flex items-center justify-center p-3 backdrop-blur-md sm:p-6"
+  >
+    <div
+      [ngClass]="
+        isDarkMode
+          ? 'bg-[#1a1c20] border-white/10'
+          : 'bg-[#f0ece5] border-[#cec7bd]'
+      "
+      class="relative h-[70vh] w-full max-w-4xl overflow-hidden rounded-2xl border shadow-2xl"
+    >
+      <button
+        type="button"
+        (click)="closeMap()"
+        [ngClass]="
+          isDarkMode
+            ? 'bg-black/80 border-white/10 text-white hover:bg-red-500'
+            : 'bg-[#e7e3dc] border-[#cec7bd] text-[#25231f] hover:border-[#c95812] hover:bg-[#c95812] hover:text-white'
+        "
+        class="absolute right-3 top-3 z-10 rounded-full border p-2 shadow-lg transition-all duration-300 hover:rotate-90"
+        aria-label="Close map"
+      >
+        <lucide-icon
+          name="x"
+          class="h-4 w-4"
+        ></lucide-icon>
+      </button>
+
+      <iframe
+        class="block h-full w-full"
+        [src]="mapUrl"
+        style="border: 0"
+        allowfullscreen
+        loading="lazy"
+      ></iframe>
+    </div>
+  </div>
+</div>

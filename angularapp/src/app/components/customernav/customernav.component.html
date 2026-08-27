@@ -1,0 +1,356 @@
+<header
+  class="pointer-events-none fixed left-0 top-0 z-[9999] flex w-full flex-col gap-2 px-3 py-3 sm:px-6 sm:py-4 lg:flex-row lg:items-center lg:justify-between lg:px-8"
+>
+  <!-- ======================================================= -->
+  <!-- NAVBAR BACKDROP (fade) -->
+  <!-- ======================================================= -->
+
+  <div
+    aria-hidden="true"
+    [ngClass]="
+      isDarkMode
+        ? 'from-[#050505] from-35% via-[#050505] via-55%'
+        : 'from-[#e7e3dc] from-35% via-[#e7e3dc] via-55%'
+    "
+    class="pointer-events-none fixed left-0 top-0 -z-10 h-36 w-full bg-gradient-to-b to-transparent sm:h-40 lg:h-32"
+  ></div>
+
+  <!-- ======================================================= -->
+  <!-- MOBILE TOP ROW: LOGO, WELCOME, THEME AND LOGOUT -->
+  <!-- ======================================================= -->
+
+  <div
+    class="flex w-full items-center justify-between gap-2 lg:w-auto lg:shrink-0"
+  >
+    <!-- ===================================================== -->
+    <!-- LOGO AND WELCOME MESSAGE -->
+    <!-- ===================================================== -->
+
+    <div class="flex min-w-0 items-center gap-2 sm:gap-3">
+      <!-- LOGO -->
+
+      <div
+        (click)="goHome()"
+        class="pointer-events-auto flex shrink-0 cursor-pointer items-center gap-2 font-sans text-lg font-extrabold uppercase tracking-[0.15em] drop-shadow-2xl transition-transform duration-300 hover:scale-105 sm:text-xl lg:text-2xl"
+      >
+        <!-- Compass badge -->
+
+        <div
+          [ngClass]="
+            isDarkMode
+              ? 'from-red-600 to-orange-500 shadow-red-500/40'
+              : 'from-[#a9420c] via-[#c95812] to-[#dc7a39] shadow-[0_8px_20px_rgba(169,66,12,0.32)]'
+          "
+          class="rounded-xl bg-gradient-to-br p-1.5 shadow-lg sm:p-2"
+        >
+          <lucide-icon
+            name="compass"
+            class="h-5 w-5 text-white sm:h-6 sm:w-6"
+          ></lucide-icon>
+        </div>
+
+        <!-- DriveU wordmark -->
+
+        <span class="hidden sm:inline">
+          <span
+            [ngClass]="
+              isDarkMode
+                ? 'text-white'
+                : 'text-[#25231f]'
+            "
+          >
+            Drive
+          </span>
+
+          <span
+            [ngClass]="
+              isDarkMode
+                ? 'from-red-500 to-orange-400'
+                : 'from-[#a9420c] via-[#c95812] to-[#dc7a39]'
+            "
+            class="ml-1 bg-gradient-to-r bg-clip-text text-transparent"
+          >
+            U
+          </span>
+        </span>
+      </div>
+
+      <!-- WELCOME MESSAGE -->
+
+      <div
+        class="pointer-events-auto min-w-0 border-l pl-2 sm:pl-3"
+        [ngClass]="isDarkMode ? 'border-white/10' : 'border-[#cec7bd]'"
+      >
+        <span
+          [ngClass]="isDarkMode ? 'text-slate-400' : 'text-[#686158]'"
+          class="block text-[9px] font-semibold uppercase tracking-wider sm:text-[10px]"
+        >
+          Welcome
+        </span>
+
+        <span
+          [ngClass]="isDarkMode ? 'text-white' : 'text-[#25231f]'"
+          class="block max-w-[90px] truncate text-xs font-extrabold sm:max-w-[150px] sm:text-sm"
+          [title]="userName"
+        >
+          {{ userName }}
+        </span>
+      </div>
+    </div>
+
+    <!-- ===================================================== -->
+    <!-- MOBILE AND TABLET ACTION BUTTONS -->
+    <!-- ===================================================== -->
+
+    <div class="flex shrink-0 items-center gap-1.5 sm:gap-2 lg:hidden">
+      <!-- THEME BUTTON -->
+
+      <button
+        type="button"
+        (click)="toggleTheme()"
+        [ngClass]="
+          isDarkMode
+            ? 'bg-[#1a1c20]/90 border-orange-500/30 text-orange-400 hover:bg-orange-500 hover:text-white'
+            : 'bg-[#f0ece5]/90 border-[#cec7bd] text-[#c95812] hover:border-[#c95812] hover:bg-[#c95812] hover:text-white shadow-[0_10px_25px_rgba(37,35,31,0.14)]'
+        "
+        class="pointer-events-auto flex h-9 w-9 shrink-0 items-center justify-center rounded-full border shadow-2xl backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 sm:h-10 sm:w-10"
+        [title]="isDarkMode ? 'Switch to Warm Stone theme' : 'Switch to Dark theme'"
+        aria-label="Switch theme"
+      >
+        <lucide-icon
+          *ngIf="isDarkMode"
+          name="moon"
+          class="h-4 w-4 sm:h-5 sm:w-5"
+        ></lucide-icon>
+
+        <lucide-icon
+          *ngIf="!isDarkMode"
+          name="sun"
+          class="h-4 w-4 sm:h-5 sm:w-5"
+        ></lucide-icon>
+      </button>
+
+      <!-- LOGOUT BUTTON -->
+
+      <button
+        type="button"
+        (click)="logout()"
+        [ngClass]="
+          isDarkMode
+            ? 'bg-[#1a1c20]/90 border-red-500/30 text-red-400 hover:bg-red-500 hover:text-white'
+            : 'bg-[#f0ece5]/90 border-[#cec7bd] text-[#a9420c] hover:border-[#a9420c] hover:bg-[#a9420c] hover:text-white shadow-[0_10px_25px_rgba(37,35,31,0.14)]'
+        "
+        class="pointer-events-auto flex h-9 w-9 shrink-0 items-center justify-center rounded-full border shadow-2xl backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 sm:h-10 sm:w-10"
+        title="Secure Logout"
+        aria-label="Secure logout"
+      >
+        <lucide-icon
+          name="log-out"
+          class="h-4 w-4 sm:h-5 sm:w-5"
+        ></lucide-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- ======================================================= -->
+  <!-- RIGHT SIDE -->
+  <!-- ======================================================= -->
+
+  <div
+    class="flex w-full min-w-0 items-center gap-2 sm:gap-3 lg:w-auto lg:shrink-0"
+  >
+    <!-- ===================================================== -->
+    <!-- NAVIGATION PILL -->
+    <!-- ===================================================== -->
+
+    <nav
+      [ngClass]="
+        isDarkMode
+          ? 'bg-[#1a1c20]/90 border-white/10'
+          : 'bg-[#f0ece5]/90 border-[#cec7bd] shadow-[0_12px_32px_rgba(37,35,31,0.16)]'
+      "
+      class="pointer-events-auto grid w-full min-w-0 grid-cols-4 items-center gap-0.5 rounded-full border p-1 shadow-2xl backdrop-blur-xl transition-colors duration-500 lg:flex lg:w-auto"
+    >
+      <!-- HOME -->
+
+      <button
+        type="button"
+        (click)="goHome()"
+        [ngClass]="
+          activeView === 'home'
+            ? (
+                isDarkMode
+                  ? 'bg-red-900/60 border-red-500/70 text-red-300 shadow-inner'
+                  : 'bg-gradient-to-r from-[#a9420c] via-[#c95812] to-[#dc7a39] border-[#c95812] text-white shadow-[inset_0_1px_2px_rgba(255,255,255,0.25),0_5px_14px_rgba(169,66,12,0.26)]'
+              )
+            : (
+                isDarkMode
+                  ? 'text-slate-300 hover:text-white hover:bg-white/5 border-transparent'
+                  : 'text-[#545047] hover:text-[#a9420c] hover:bg-[#f1dccb] border-transparent'
+              )
+        "
+        class="flex min-w-0 items-center justify-center gap-1 whitespace-nowrap rounded-full border px-1.5 py-1.5 text-[10px] font-bold tracking-wide transition-all duration-300 sm:gap-1.5 sm:px-4 sm:py-2 sm:text-xs lg:px-5 lg:text-sm"
+      >
+        <lucide-icon
+          name="house"
+          class="h-3.5 w-3.5 shrink-0"
+        ></lucide-icon>
+
+        Home
+      </button>
+
+      <!-- BOOK DRIVER -->
+
+      <button
+        type="button"
+        (click)="goBookDriver()"
+        [ngClass]="
+          activeView === 'drivers'
+            ? (
+                isDarkMode
+                  ? 'bg-red-900/60 border-red-500/70 text-red-300 shadow-inner'
+                  : 'bg-gradient-to-r from-[#a9420c] via-[#c95812] to-[#dc7a39] border-[#c95812] text-white shadow-[inset_0_1px_2px_rgba(255,255,255,0.25),0_5px_14px_rgba(169,66,12,0.26)]'
+              )
+            : (
+                isDarkMode
+                  ? 'text-slate-300 hover:text-white hover:bg-white/5 border-transparent'
+                  : 'text-[#545047] hover:text-[#a9420c] hover:bg-[#f1dccb] border-transparent'
+              )
+        "
+        class="flex min-w-0 items-center justify-center gap-1 whitespace-nowrap rounded-full border px-1.5 py-1.5 text-[10px] font-bold tracking-wide transition-all duration-300 sm:gap-1.5 sm:px-4 sm:py-2 sm:text-xs lg:px-5 lg:text-sm"
+      >
+        <lucide-icon
+          name="car"
+          class="h-3.5 w-3.5 shrink-0"
+        ></lucide-icon>
+
+        <span class="hidden sm:inline">
+          Book Driver
+        </span>
+
+        <span class="sm:hidden">
+          Book
+        </span>
+      </button>
+
+      <!-- MY REQUESTS -->
+
+      <button
+        type="button"
+        (click)="goMyRequests()"
+        [ngClass]="
+          activeView === 'requests'
+            ? (
+                isDarkMode
+                  ? 'bg-red-900/60 border-red-500/70 text-red-300 shadow-inner'
+                  : 'bg-gradient-to-r from-[#a9420c] via-[#c95812] to-[#dc7a39] border-[#c95812] text-white shadow-[inset_0_1px_2px_rgba(255,255,255,0.25),0_5px_14px_rgba(169,66,12,0.26)]'
+              )
+            : (
+                isDarkMode
+                  ? 'text-slate-300 hover:text-white hover:bg-white/5 border-transparent'
+                  : 'text-[#545047] hover:text-[#a9420c] hover:bg-[#f1dccb] border-transparent'
+              )
+        "
+        class="flex min-w-0 items-center justify-center gap-1 whitespace-nowrap rounded-full border px-1.5 py-1.5 text-[10px] font-bold tracking-wide transition-all duration-300 sm:gap-1.5 sm:px-4 sm:py-2 sm:text-xs lg:px-5 lg:text-sm"
+      >
+        <lucide-icon
+          name="clipboard-list"
+          class="h-3.5 w-3.5 shrink-0"
+        ></lucide-icon>
+
+        <span class="hidden sm:inline">
+          My Requests
+        </span>
+
+        <span class="sm:hidden">
+          Rides
+        </span>
+      </button>
+
+      <!-- FEEDBACK -->
+
+      <button
+        type="button"
+        (click)="goFeedback()"
+        [ngClass]="
+          activeView === 'feedback'
+            ? (
+                isDarkMode
+                  ? 'bg-red-900/60 border-red-500/70 text-red-300 shadow-inner'
+                  : 'bg-gradient-to-r from-[#a9420c] via-[#c95812] to-[#dc7a39] border-[#c95812] text-white shadow-[inset_0_1px_2px_rgba(255,255,255,0.25),0_5px_14px_rgba(169,66,12,0.26)]'
+              )
+            : (
+                isDarkMode
+                  ? 'text-slate-300 hover:text-white hover:bg-white/5 border-transparent'
+                  : 'text-[#545047] hover:text-[#a9420c] hover:bg-[#f1dccb] border-transparent'
+              )
+        "
+        class="flex min-w-0 items-center justify-center gap-1 whitespace-nowrap rounded-full border px-1.5 py-1.5 text-[10px] font-bold tracking-wide transition-all duration-300 sm:gap-1.5 sm:px-4 sm:py-2 sm:text-xs lg:px-5 lg:text-sm"
+      >
+        <lucide-icon
+          name="star"
+          class="h-3.5 w-3.5 shrink-0"
+        ></lucide-icon>
+
+        <span class="hidden md:inline">
+          Feedback
+        </span>
+
+        <span class="md:hidden">
+          Rate
+        </span>
+      </button>
+    </nav>
+
+    <!-- ===================================================== -->
+    <!-- DESKTOP THEME BUTTON -->
+    <!-- ===================================================== -->
+
+    <button
+      type="button"
+      (click)="toggleTheme()"
+      [ngClass]="
+        isDarkMode
+          ? 'bg-[#1a1c20]/90 border-orange-500/30 text-orange-400 hover:bg-orange-500 hover:text-white'
+          : 'bg-[#f0ece5]/90 border-[#cec7bd] text-[#c95812] hover:border-[#c95812] hover:bg-[#c95812] hover:text-white shadow-[0_10px_25px_rgba(37,35,31,0.14)]'
+      "
+      class="pointer-events-auto hidden shrink-0 items-center justify-center rounded-full border p-2 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 sm:p-2.5 lg:flex"
+      [title]="isDarkMode ? 'Switch to Warm Stone theme' : 'Switch to Dark theme'"
+      aria-label="Switch theme"
+    >
+      <lucide-icon
+        *ngIf="isDarkMode"
+        name="moon"
+        class="h-4 w-4 sm:h-5 sm:w-5"
+      ></lucide-icon>
+
+      <lucide-icon
+        *ngIf="!isDarkMode"
+        name="sun"
+        class="h-4 w-4 sm:h-5 sm:w-5"
+      ></lucide-icon>
+    </button>
+
+    <!-- ===================================================== -->
+    <!-- DESKTOP LOGOUT BUTTON -->
+    <!-- ===================================================== -->
+
+    <button
+      type="button"
+      (click)="logout()"
+      [ngClass]="
+        isDarkMode
+          ? 'bg-[#1a1c20]/90 border-red-500/30 text-red-400 hover:bg-red-500 hover:text-white'
+          : 'bg-[#f0ece5]/90 border-[#cec7bd] text-[#a9420c] hover:border-[#a9420c] hover:bg-[#a9420c] hover:text-white shadow-[0_10px_25px_rgba(37,35,31,0.14)]'
+      "
+      class="pointer-events-auto hidden shrink-0 items-center justify-center rounded-full border p-2 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 sm:p-2.5 lg:flex"
+      title="Secure Logout"
+      aria-label="Secure logout"
+    >
+      <lucide-icon
+        name="log-out"
+        class="h-4 w-4 sm:h-5 sm:w-5"
+      ></lucide-icon>
+    </button>
+  </div>
+</header>

@@ -1,0 +1,741 @@
+<div class="admin-page driver-management-page">
+
+  <!-- PAGE HEADER -->
+  <header class="driver-page-header">
+
+    <div class="driver-heading-group">
+
+      <div class="driver-heading-icon">
+        <lucide-icon [name]="isEditMode ? 'square-pen' : 'user-round-plus'" [size]="30"></lucide-icon>
+      </div>
+
+      <div class="driver-heading-content">
+        <p class="admin-page-label">
+          Driver Management
+        </p>
+
+        <h1 class="driver-page-title">
+          {{ isEditMode ? 'Edit Driver' : 'Create Driver' }}
+        </h1>
+
+        <p class="driver-page-description">
+          {{
+          isEditMode
+          ? 'Update the driver profile, vehicle and availability information.'
+          : 'Add and manage driver profile, vehicle and availability information.'
+          }}
+        </p>
+      </div>
+
+    </div>
+
+    <button type="button" class="back-button" [disabled]="isSubmitting" (click)="goBack()">
+      <lucide-icon name="arrow-left" [size]="17"></lucide-icon>
+
+      <span>Back to Drivers</span>
+    </button>
+
+  </header>
+
+  <!-- API ERROR MESSAGE -->
+  <div *ngIf="errorMessage" class="form-alert" role="alert">
+
+    <div class="form-alert-icon">
+      <lucide-icon name="circle-alert" [size]="20"></lucide-icon>
+    </div>
+
+    <div class="form-alert-content">
+      <strong>
+        Unable to save driver
+      </strong>
+
+      <span>
+        {{ errorMessage }}
+      </span>
+    </div>
+
+    <button type="button" class="alert-close-button" aria-label="Close error message" (click)="errorMessage = ''">
+      <lucide-icon name="x" [size]="16"></lucide-icon>
+    </button>
+
+  </div>
+
+  <!-- DRIVER FORM -->
+  <form #driverForm="ngForm" class="driver-form-layout" novalidate (ngSubmit)="saveDriver(driverForm)">
+
+    <!-- LEFT PROFILE SECTION -->
+    <aside class="driver-profile-card">
+
+      <div class="section-heading">
+
+        <div>
+          <p class="section-label">
+            Profile
+          </p>
+
+          <h2 class="section-title">
+            Driver Profile
+          </h2>
+        </div>
+
+        <lucide-icon name="image" [size]="21" class="section-heading-icon"></lucide-icon>
+
+      </div>
+
+      <!-- IMAGE UPLOAD (also auto-scans the license) -->
+      <div class="image-upload-area" [class.image-upload-error]="imageError" [class.has-image]="driver.image">
+
+        <ng-container *ngIf="!driver.image">
+
+          <div class="upload-placeholder-icon">
+            <lucide-icon name="image-plus" [size]="30"></lucide-icon>
+          </div>
+
+          <h3>Upload License / Driver Image</h3>
+
+          <p>PNG, JPG or WEBP</p>
+          <p>Maximum file size: 2 MB</p>
+
+        </ng-container>
+
+        <img *ngIf="driver.image" [src]="driver.image" alt="Selected driver" class="driver-image-preview" />
+
+        <input #imageInput id="driverImage" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+          class="hidden-file-input" (change)="onFileSelected($event)" />
+
+        <label for="driverImage" class="choose-image-button">
+          <lucide-icon [name]="driver.image ? 'refresh-cw' : 'upload-cloud'" [size]="17"></lucide-icon>
+
+          <span>
+            {{ driver.image ? 'Change Image' : 'Choose Image' }}
+          </span>
+        </label>
+
+      </div>
+
+      <!-- IMAGE ERROR -->
+      <div *ngIf="imageError" class="field-error image-error-message">
+        <lucide-icon name="circle-alert" [size]="14"></lucide-icon>
+
+        <span>{{ imageError }}</span>
+      </div>
+
+      <!-- IMAGE INFO -->
+      <div class="image-information">
+
+        <div class="image-information-item">
+          <lucide-icon name="file-image" [size]="14"></lucide-icon>
+
+          <span>JPG, PNG or WEBP format</span>
+        </div>
+
+        <div class="image-information-item">
+          <lucide-icon name="badge-check" [size]="14"></lucide-icon>
+
+          <span>Details auto-fill from license image</span>
+        </div>
+
+      </div>
+
+      <!-- ===== OCR SCAN STATUS ===== -->
+      <div *ngIf="isScanning" class="scan-status scan-ok">
+        <lucide-icon name="loader-circle" [size]="14" class="button-spinner"></lucide-icon>
+
+        <span>Reading license details...</span>
+      </div>
+
+      <div *ngIf="!isScanning && scanMessage" class="scan-status scan-ok">
+        <lucide-icon name="badge-check" [size]="14"></lucide-icon>
+
+        <span>{{ scanMessage }}</span>
+      </div>
+
+      <div *ngIf="scanError" class="scan-status scan-err">
+        <lucide-icon name="circle-alert" [size]="14"></lucide-icon>
+
+        <span>{{ scanError }}</span>
+      </div>
+
+      <!-- REMOVE IMAGE -->
+      <button *ngIf="driver.image" type="button" class="remove-image-button" (click)="removeImage(imageInput)">
+        <lucide-icon name="trash-2" [size]="16"></lucide-icon>
+
+        <span>Remove Image</span>
+      </button>
+
+      <!-- CURRENT STATUS -->
+      <div class="profile-status-card">
+
+        <span class="profile-status-dot" [ngClass]="{
+    'status-available': driver.availabilityStatus === 'Active',
+    'status-busy': driver.availabilityStatus === 'On Leave',
+    'status-offline': driver.availabilityStatus === 'Inactive'
+  }"></span>
+
+        <div>
+          <p>Current Status</p>
+
+          <strong>
+            {{ driver.availabilityStatus || 'Not selected' }}
+          </strong>
+        </div>
+
+      </div>
+
+    </aside>
+
+    <!-- RIGHT FORM CONTENT -->
+    <div class="driver-form-content">
+
+      <!-- PERSONAL INFORMATION -->
+      <section class="form-section-card">
+
+        <div class="section-heading">
+
+          <div>
+            <p class="section-label">
+              General Details
+            </p>
+
+            <h2 class="section-title">
+              Personal Information
+            </h2>
+          </div>
+
+          <lucide-icon name="contact" [size]="21" class="section-heading-icon"></lucide-icon>
+
+        </div>
+
+        <div class="form-grid two-column-grid">
+
+          <!-- DRIVER NAME -->
+          <div class="form-field">
+
+            <label for="driverName">
+              Driver Name
+              <span class="required-symbol">*</span>
+            </label>
+
+            <div class="input-container" [class.input-invalid]="
+                driverName.invalid &&
+                (driverName.touched || formSubmitted)
+              " [class.input-valid]="
+                driverName.valid && driverName.touched
+              ">
+
+              <lucide-icon name="user" [size]="20" class="input-icon"></lucide-icon>
+
+              <input id="driverName" type="text" name="driverName" [(ngModel)]="driver.driverName" #driverName="ngModel"
+                placeholder="Enter driver full name" autocomplete="name" required minlength="3" maxlength="50"
+                pattern="^[A-Za-z]+(?: [A-Za-z]+)*$" (blur)="trimField('driverName')" />
+
+              <lucide-icon *ngIf="driverName.valid && driverName.touched" name="circle-check" [size]="19"
+                class="validation-icon valid-icon"></lucide-icon>
+
+            </div>
+
+            <div *ngIf="
+                driverName.invalid &&
+                (driverName.touched || formSubmitted)
+              " class="field-error">
+              <lucide-icon name="circle-alert" [size]="14"></lucide-icon>
+
+              <span *ngIf="driverName.errors?.['required']">
+                Driver name is required.
+              </span>
+
+              <span *ngIf="driverName.errors?.['minlength']">
+                Driver name must contain at least 3 characters.
+              </span>
+
+              <span *ngIf="driverName.errors?.['pattern']">
+                Use letters and single spaces only.
+              </span>
+            </div>
+
+          </div>
+
+          <!-- CONTACT NUMBER -->
+          <div class="form-field">
+
+            <label for="contactNumber">
+              Contact Number
+              <span class="required-symbol">*</span>
+            </label>
+
+            <div class="input-container" [class.input-invalid]="
+                contactNumber.invalid &&
+                (contactNumber.touched || formSubmitted)
+              " [class.input-valid]="
+                contactNumber.valid && contactNumber.touched
+              ">
+
+              <lucide-icon name="phone" [size]="20" class="input-icon"></lucide-icon>
+
+              <input id="contactNumber" type="tel" name="contactNumber" [(ngModel)]="driver.contactNumber"
+                #contactNumber="ngModel" placeholder="Enter 10-digit mobile number" autocomplete="tel"
+                inputmode="numeric" required minlength="10" maxlength="10" pattern="^[6-9][0-9]{9}$"
+                (input)="allowContactNumbersOnly($event)" />
+
+              <lucide-icon *ngIf="contactNumber.valid && contactNumber.touched" name="circle-check" [size]="19"
+                class="validation-icon valid-icon"></lucide-icon>
+
+            </div>
+
+            <div *ngIf="
+                contactNumber.invalid &&
+                (contactNumber.touched || formSubmitted)
+              " class="field-error">
+              <lucide-icon name="circle-alert" [size]="14"></lucide-icon>
+
+              <span *ngIf="contactNumber.errors?.['required']">
+                Contact number is required.
+              </span>
+
+              <span *ngIf="
+                  contactNumber.errors?.['pattern'] ||
+                  contactNumber.errors?.['minlength']
+                ">
+                Enter a valid 10-digit Indian mobile number.
+              </span>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ADDRESS -->
+        <div class="form-field full-width-field">
+
+          <label for="address">
+            Address
+            <span class="required-symbol">*</span>
+          </label>
+
+          <div class="input-container textarea-container" [class.input-invalid]="
+              address.invalid &&
+              (address.touched || formSubmitted)
+            " [class.input-valid]="
+              address.valid && address.touched
+            ">
+
+            <lucide-icon name="map-pin" [size]="20" class="input-icon textarea-icon"></lucide-icon>
+
+            <textarea id="address" name="address" [(ngModel)]="driver.address" #address="ngModel" rows="4"
+              placeholder="Enter complete residential address" required minlength="10" maxlength="250"
+              (blur)="trimField('address')"></textarea>
+
+            <span class="character-counter">
+              {{ driver.address.length || 0 }}/250
+            </span>
+
+          </div>
+
+          <div *ngIf="
+              address.invalid &&
+              (address.touched || formSubmitted)
+            " class="field-error">
+            <lucide-icon name="circle-alert" [size]="14"></lucide-icon>
+
+            <span *ngIf="address.errors?.['required']">
+              Address is required.
+            </span>
+
+            <span *ngIf="address.errors?.['minlength']">
+              Address must contain at least 10 characters.
+            </span>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- LICENSE AND EXPERIENCE -->
+      <section class="form-section-card">
+
+        <div class="section-heading">
+
+          <div>
+            <p class="section-label">
+              Qualification
+            </p>
+
+            <h2 class="section-title">
+              License and Experience
+            </h2>
+          </div>
+
+          <lucide-icon name="badge-check" [size]="21" class="section-heading-icon"></lucide-icon>
+
+        </div>
+
+        <div class="form-grid two-column-grid">
+
+          <!-- LICENSE NUMBER (Indian Driving Licence) -->
+          <div class="form-field">
+
+            <label for="licenseNumber">
+              Driving Licence Number
+              <span class="required-symbol">*</span>
+            </label>
+
+            <div class="input-container" [class.input-invalid]="
+                licenseNumber.invalid &&
+                (licenseNumber.touched || formSubmitted)
+              " [class.input-valid]="
+                licenseNumber.valid && licenseNumber.touched
+              ">
+
+              <lucide-icon name="shield-check" [size]="20" class="input-icon"></lucide-icon>
+
+              <input id="licenseNumber" type="text" name="licenseNumber" [(ngModel)]="driver.licenseNumber"
+                #licenseNumber="ngModel" placeholder="e.g. KA0120200001234" autocomplete="off" required minlength="15"
+                maxlength="16" pattern="^[A-Z]{2}[0-9]{2}[ -]?[0-9]{4}[ -]?[0-9]{7}$"
+                title="Enter a valid Indian driving licence number such as KA0120200001234"
+                (input)="formatLicenseNumber($event)" (blur)="trimField('licenseNumber')" />
+
+              <lucide-icon *ngIf="licenseNumber.valid && licenseNumber.touched" name="circle-check" [size]="19"
+                class="validation-icon valid-icon"></lucide-icon>
+
+            </div>
+
+            <div *ngIf="
+                licenseNumber.invalid &&
+                (licenseNumber.touched || formSubmitted)
+              " class="field-error">
+              <lucide-icon name="circle-alert" [size]="14"></lucide-icon>
+
+              <span *ngIf="licenseNumber.errors?.['required']">
+                Driving licence number is required.
+              </span>
+
+              <span *ngIf="
+                  !licenseNumber.errors?.['required'] &&
+                  (
+                    licenseNumber.errors?.['minlength'] ||
+                    licenseNumber.errors?.['maxlength'] ||
+                    licenseNumber.errors?.['pattern']
+                  )
+                ">
+                Enter a valid Indian driving licence number such as KA0120200001234.
+              </span>
+            </div>
+
+          </div>
+
+          <!-- EXPERIENCE -->
+          <div class="form-field">
+
+            <label for="experienceYears">
+              Experience in Years
+              <span class="required-symbol">*</span>
+            </label>
+
+            <div class="input-container input-with-suffix" [class.input-invalid]="
+                experienceYears.invalid &&
+                (experienceYears.touched || formSubmitted)
+              " [class.input-valid]="
+                experienceYears.valid && experienceYears.touched
+              ">
+
+              <lucide-icon name="briefcase-business" [size]="20" class="input-icon"></lucide-icon>
+
+              <input id="experienceYears" type="number" name="experienceYears" [(ngModel)]="driver.experienceYears"
+                #experienceYears="ngModel" placeholder="Enter experience" inputmode="numeric" required min="0" max="50"
+                step="1" (keydown)="preventInvalidNumberKeys($event)" />
+
+              <span class="input-suffix">
+                Years
+              </span>
+
+            </div>
+
+            <div *ngIf="
+                experienceYears.invalid &&
+                (experienceYears.touched || formSubmitted)
+              " class="field-error">
+              <lucide-icon name="circle-alert" [size]="14"></lucide-icon>
+
+              <span *ngIf="experienceYears.errors?.['required']">
+                Experience is required.
+              </span>
+
+              <span *ngIf="
+                  experienceYears.errors?.['min'] ||
+                  experienceYears.errors?.['max']
+                ">
+                Experience must be between 0 and 50 years.
+              </span>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- VEHICLE AND AVAILABILITY -->
+      <section class="form-section-card">
+
+        <div class="section-heading">
+
+          <div>
+            <p class="section-label">
+              Service Details
+            </p>
+
+            <h2 class="section-title">
+              Vehicle and Availability
+            </h2>
+          </div>
+
+          <lucide-icon name="car-front" [size]="21" class="section-heading-icon"></lucide-icon>
+
+        </div>
+
+        <div class="form-grid three-column-grid">
+
+          <!-- VEHICLE TYPE -->
+          <div class="form-field">
+
+            <label for="vehicleType">
+              Vehicle Type
+              <span class="required-symbol">*</span>
+            </label>
+
+            <div class="input-container select-container" [class.input-invalid]="
+                vehicleType.invalid &&
+                (vehicleType.touched || formSubmitted)
+              " [class.input-valid]="
+                vehicleType.valid && vehicleType.touched
+              ">
+
+              <lucide-icon name="car" [size]="20" class="input-icon"></lucide-icon>
+
+              <select id="vehicleType" name="vehicleType" [(ngModel)]="driver.vehicleType" #vehicleType="ngModel"
+                required>
+                <option value="" disabled>
+                  Select vehicle type
+                </option>
+
+                <option value="Sedan">Sedan</option>
+                <option value="SUV">SUV</option>
+                <option value="Bike">Bike</option>
+              </select>
+
+              <lucide-icon name="chevron-down" [size]="18" class="select-arrow"></lucide-icon>
+
+            </div>
+
+            <div *ngIf="
+                vehicleType.invalid &&
+                (vehicleType.touched || formSubmitted)
+              " class="field-error">
+              <lucide-icon name="circle-alert" [size]="14"></lucide-icon>
+
+              <span>Please select a vehicle type.</span>
+            </div>
+
+          </div>
+
+          <!-- HOURLY RATE -->
+          <div class="form-field">
+
+            <label for="hourlyRate">
+              Hourly Rate
+              <span class="required-symbol">*</span>
+            </label>
+
+            <div class="input-container input-with-suffix" [class.input-invalid]="
+                hourlyRate.invalid &&
+                (hourlyRate.touched || formSubmitted)
+              " [class.input-valid]="
+                hourlyRate.valid && hourlyRate.touched
+              ">
+
+              <lucide-icon name="indian-rupee" [size]="20" class="input-icon"></lucide-icon>
+
+              <input id="hourlyRate" type="number" name="hourlyRate" [(ngModel)]="driver.hourlyRate"
+                #hourlyRate="ngModel" placeholder="Enter hourly rate" inputmode="decimal" required min="50" max="10000"
+                step="0.01" (keydown)="preventInvalidRateKeys($event)" />
+
+              <span class="input-suffix">
+                / hour
+              </span>
+
+            </div>
+
+            <div *ngIf="
+                hourlyRate.invalid &&
+                (hourlyRate.touched || formSubmitted)
+              " class="field-error">
+              <lucide-icon name="circle-alert" [size]="14"></lucide-icon>
+
+              <span *ngIf="hourlyRate.errors?.['required']">
+                Hourly rate is required.
+              </span>
+
+              <span *ngIf="
+                  hourlyRate.errors?.['min'] ||
+                  hourlyRate.errors?.['max']
+                ">
+                Rate must be between ₹50 and ₹10,000.
+              </span>
+            </div>
+
+          </div>
+
+          <!-- AVAILABILITY STATUS -->
+          <div class="form-field">
+
+            <label for="availabilityStatus">
+              Availability Status
+              <span class="required-symbol">*</span>
+            </label>
+
+            <div class="input-container select-container" [class.input-invalid]="
+                availabilityStatus.invalid &&
+                (availabilityStatus.touched || formSubmitted)
+              " [class.input-valid]="
+                availabilityStatus.valid &&
+                availabilityStatus.touched
+              ">
+
+              <lucide-icon name="circle-dot" [size]="20" class="input-icon"></lucide-icon>
+
+              <select id="availabilityStatus" name="availabilityStatus" [(ngModel)]="driver.availabilityStatus"
+                #availabilityStatus="ngModel" required>
+                <option value="" disabled>
+                  Select status
+                </option>
+
+                <option value="Active">
+                  Active
+                </option>
+
+                <option value="Inactive">
+                  Inactive
+                </option>
+
+                <option value="On Leave">
+                  On Leave
+                </option>
+              </select>
+
+              <lucide-icon name="chevron-down" [size]="18" class="select-arrow"></lucide-icon>
+
+            </div>
+
+            <div *ngIf="
+                availabilityStatus.invalid &&
+                (availabilityStatus.touched || formSubmitted)
+              " class="field-error">
+              <lucide-icon name="circle-alert" [size]="14"></lucide-icon>
+
+              <span>
+                Please select an availability status.
+              </span>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- FORM ACTIONS -->
+      <footer class="form-actions-card">
+
+        <div class="required-information">
+          <lucide-icon name="info" [size]="15"></lucide-icon>
+
+          <span>
+            Fields marked with
+            <strong>*</strong>
+            are required.
+          </span>
+        </div>
+
+        <div class="form-action-buttons">
+
+          <button type="button" class="cancel-button" [disabled]="isSubmitting" (click)="goBack()">
+            <lucide-icon name="x" [size]="17"></lucide-icon>
+
+            <span>Cancel</span>
+          </button>
+
+          <button type="submit" class="submit-button" [disabled]="isSubmitting">
+
+            <lucide-icon *ngIf="!isSubmitting" [name]="isEditMode ? 'save' : 'user-plus'" [size]="17"></lucide-icon>
+
+            <lucide-icon *ngIf="isSubmitting" name="loader-circle" [size]="17" class="button-spinner"></lucide-icon>
+
+            <span>
+              {{
+              isSubmitting
+              ? 'Saving Driver...'
+              : isEditMode
+              ? 'Update Driver'
+              : 'Add Driver'
+              }}
+            </span>
+
+          </button>
+
+        </div>
+
+      </footer>
+
+    </div>
+
+  </form>
+
+</div>
+
+<!-- SUCCESS MODAL -->
+<div *ngIf="showSuccessModal" class="success-modal-overlay" role="dialog" aria-modal="true"
+  aria-labelledby="successModalTitle">
+
+  <div class="success-modal">
+
+    <div class="modal-top-line"></div>
+
+    <div class="success-animation">
+
+      <div class="success-ring"></div>
+
+      <div class="success-icon">
+        <lucide-icon name="check" [size]="28"></lucide-icon>
+      </div>
+
+    </div>
+
+    <p class="success-modal-label">
+      Operation Successful
+    </p>
+
+    <h2 id="successModalTitle" class="success-modal-title">
+      {{
+      isEditMode
+      ? 'Driver Updated Successfully'
+      : 'Driver Added Successfully'
+      }}
+    </h2>
+
+    <p class="success-modal-description">
+      {{
+      isEditMode
+      ? 'The driver information has been updated successfully.'
+      : 'The new driver has been added successfully.'
+      }}
+    </p>
+
+    <button type="button" class="modal-done-button" (click)="closeModal()">
+      <lucide-icon name="circle-check" [size]="17"></lucide-icon>
+
+      <span>Done</span>
+    </button>
+
+  </div>
+
+</div>

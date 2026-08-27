@@ -1,0 +1,542 @@
+<div class="admin-page requests-page">
+
+  <!-- PAGE HEADER -->
+  <header class="requests-page-header">
+    <div>
+      <p class="admin-page-label">DriveU Operations</p>
+      <h1 class="admin-page-title">Driver <span>Requests</span></h1>
+      <p class="admin-page-description">Monitor, review and manage all customer driver requests.</p>
+    </div>
+    <button type="button" class="refresh-button" [disabled]="isLoading" (click)="loadRequests()">
+      <lucide-icon name="refresh-cw" [class.refreshing]="isLoading"></lucide-icon>
+      <span>{{ isLoading ? 'Refreshing...' : 'Refresh Data' }}</span>
+    </button>
+  </header>
+
+  <!-- SUCCESS MESSAGE -->
+  <div *ngIf="successMessage" class="request-alert success-alert" role="status">
+    <div class="alert-icon"><lucide-icon name="circle-check"></lucide-icon></div>
+    <div class="alert-content">
+      <strong>Operation Successful</strong>
+      <span>{{ successMessage }}</span>
+    </div>
+    <button type="button" class="alert-close-button" aria-label="Close success message" (click)="closeMessage()">
+      <lucide-icon name="x"></lucide-icon>
+    </button>
+  </div>
+
+  <!-- ERROR MESSAGE -->
+  <div *ngIf="errorMessage" class="request-alert error-alert" role="alert">
+    <div class="alert-icon"><lucide-icon name="circle-alert"></lucide-icon></div>
+    <div class="alert-content">
+      <strong>Operation Failed</strong>
+      <span>{{ errorMessage }}</span>
+    </div>
+    <button type="button" class="alert-close-button" aria-label="Close error message" (click)="closeMessage()">
+      <lucide-icon name="x"></lucide-icon>
+    </button>
+  </div>
+
+  <!-- REQUEST STATISTICS -->
+  <section class="request-statistics">
+    <article class="request-stat-card">
+      <div class="stat-icon stat-total"><lucide-icon name="clipboard-list"></lucide-icon></div>
+      <div class="stat-content">
+        <span>Total Requests</span>
+        <strong>{{ totalRequests }}</strong>
+        <small>All customer requests</small>
+      </div>
+    </article>
+
+    <article class="request-stat-card">
+      <div class="stat-icon stat-pending"><lucide-icon name="clock-3"></lucide-icon></div>
+      <div class="stat-content">
+        <span>Pending</span>
+        <strong>{{ pendingRequests }}</strong>
+        <small>Waiting for review</small>
+      </div>
+    </article>
+
+    <article class="request-stat-card">
+      <div class="stat-icon stat-approved"><lucide-icon name="circle-check"></lucide-icon></div>
+      <div class="stat-content">
+        <span>Approved</span>
+        <strong>{{ approvedRequests }}</strong>
+        <small>Approved requests</small>
+      </div>
+    </article>
+
+    <article class="request-stat-card">
+      <div class="stat-icon stat-rejected"><lucide-icon name="circle-x"></lucide-icon></div>
+      <div class="stat-content">
+        <span>Rejected</span>
+        <strong>{{ rejectedRequests }}</strong>
+        <small>Declined requests</small>
+      </div>
+    </article>
+
+    <article class="request-stat-card">
+      <div class="stat-icon stat-completed"><lucide-icon name="flag"></lucide-icon></div>
+      <div class="stat-content">
+        <span>Completed</span>
+        <strong>{{ completedRequests }}</strong>
+        <small>Trip end and closed</small>
+      </div>
+    </article>
+  </section>
+
+  <!-- FILTER PANEL -->
+  <section class="request-filter-panel">
+    <div class="filter-control search-control">
+      <lucide-icon name="search" class="filter-icon"></lucide-icon>
+      <input type="text" name="searchText" [(ngModel)]="searchText" placeholder="Search by driver, customer or request ID..." autocomplete="off" (input)="filterRequests()" />
+      <button *ngIf="searchText" type="button" class="clear-search-button" aria-label="Clear search" (click)="clearSearch()">
+        <lucide-icon name="x"></lucide-icon>
+      </button>
+    </div>
+
+    <div class="filter-control select-control">
+      <lucide-icon name="circle-dot" class="filter-icon"></lucide-icon>
+      <select name="selectedStatus" [(ngModel)]="selectedStatus" (change)="filterRequests()">
+        <option value="">All Status</option>
+        <option value="Pending">Pending</option>
+        <option value="Approved">Approved</option>
+        <option value="Rejected">Rejected</option>
+        <option value="Trip End">Trip End</option>
+        <option value="Closed">Closed</option>
+      </select>
+      <lucide-icon name="chevron-down" class="select-arrow"></lucide-icon>
+    </div>
+
+    <div class="filter-control select-control">
+      <lucide-icon name="arrow-up-down" class="filter-icon"></lucide-icon>
+      <select name="selectedSort" [(ngModel)]="selectedSort" (change)="filterRequests()">
+        <option value="newest">Newest Request</option>
+        <option value="oldest">Oldest Request</option>
+        <option value="driverAsc">Driver: A to Z</option>
+        <option value="driverDesc">Driver: Z to A</option>
+        <option value="tripDateAsc">Trip Date: Earliest</option>
+        <option value="tripDateDesc">Trip Date: Latest</option>
+      </select>
+      <lucide-icon name="chevron-down" class="select-arrow"></lucide-icon>
+    </div>
+  </section>
+
+  <!-- RESULTS INFO -->
+  <div class="results-information">
+    <span>Showing <strong>{{ filteredRequests.length }}</strong> of <strong>{{ requests.length }}</strong> requests</span>
+    <button *ngIf="searchText || selectedStatus" type="button" class="reset-filter-button" (click)="resetFilters()">
+      <lucide-icon name="rotate-ccw"></lucide-icon>
+      <span>Reset Filters</span>
+    </button>
+  </div>
+
+  <!-- LOADING -->
+  <div *ngIf="isLoading" class="request-state-card">
+    <div class="state-icon loading-state-icon"><lucide-icon name="loader-circle"></lucide-icon></div>
+    <h2>Loading Requests</h2>
+    <p>Please wait while request information is being loaded.</p>
+  </div>
+
+  <!-- EMPTY -->
+  <div *ngIf="!isLoading && filteredRequests.length === 0" class="request-state-card">
+    <div class="state-icon"><lucide-icon name="clipboard-x"></lucide-icon></div>
+    <h2>No Requests Found</h2>
+    <p>No request matches the current search or status filter.</p>
+    <button type="button" class="empty-reset-button" (click)="resetFilters()">
+      <lucide-icon name="rotate-ccw"></lucide-icon>
+      <span>Reset Filters</span>
+    </button>
+  </div>
+
+  <!-- REQUEST CARDS -->
+  <section *ngIf="!isLoading && filteredRequests.length > 0" class="requests-grid">
+    <article *ngFor="let request of paginatedRequests; let index = index" class="request-card" [ngClass]="getRequestCardClass(request.status)" [style.animationDelay.ms]="index * 70">
+
+      <div class="request-card-header">
+        <div class="request-id-section">
+          <div class="request-icon"><lucide-icon name="file-text"></lucide-icon></div>
+          <div>
+            <span class="request-label">Request ID</span>
+            <h2>#{{ request.driverRequestId }}</h2>
+          </div>
+        </div>
+        <span class="request-status" [ngClass]="getStatusClass(request.status)">
+          <span class="request-status-dot"></span>
+          {{ request.status }}
+        </span>
+      </div>
+
+      <div class="request-people-grid">
+        <div class="person-card">
+          <div class="person-avatar customer-avatar">
+            {{ request.user?.username ? request.user.username.charAt(0).toUpperCase() : 'C' }}
+          </div>
+          <div class="person-content">
+            <span>Customer</span>
+            <strong>{{ request.user?.username || 'Not Available' }}</strong>
+          </div>
+        </div>
+
+        <div class="person-card">
+          <div class="person-avatar driver-avatar">
+            <img *ngIf="request.driver?.image" [src]="request.driver.image" [alt]="request.driver?.driverName || 'Driver'" />
+            <span *ngIf="!request.driver?.image">
+              {{ request.driver?.driverName ? request.driver.driverName.charAt(0).toUpperCase() : 'D' }}
+            </span>
+          </div>
+          <div class="person-content">
+            <span>Assigned Driver</span>
+            <strong>{{ request.driver?.driverName || 'Not Assigned' }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="request-details">
+        <div class="detail-row">
+          <div class="detail-icon"><lucide-icon name="calendar-days"></lucide-icon></div>
+          <div class="detail-content">
+            <span>Trip Date</span>
+            <strong>{{ formatTripDate(request.tripDate) }}</strong>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-icon"><lucide-icon name="car-front"></lucide-icon></div>
+          <div class="detail-content">
+            <span>Vehicle</span>
+            <strong>{{ request.driver?.vehicleType || 'Not Available' }}</strong>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-icon"><lucide-icon name="indian-rupee"></lucide-icon></div>
+          <div class="detail-content">
+            <span>Driver Rate</span>
+            <strong>{{ request.driver?.hourlyRate ? '₹' + request.driver.hourlyRate + ' / hour' : 'Not Available' }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="request-progress-section">
+        <div class="progress-header">
+          <span>Request Progress</span>
+          <strong>{{ getProgressPercentage(request.status) }}%</strong>
+        </div>
+        <div class="progress-track">
+          <span class="progress-bar" [ngClass]="getProgressClass(request.status)" [style.width.%]="getProgressPercentage(request.status)"></span>
+        </div>
+      </div>
+
+      <!-- PRIMARY ACTIONS -->
+      <div class="request-actions">
+        <button type="button" class="secondary-action-button" (click)="showDriverDetails(request)">
+          <lucide-icon name="user-round-search"></lucide-icon>
+          <span>Driver Info</span>
+        </button>
+        <button type="button" class="primary-action-button" (click)="viewStage(request)">
+          <lucide-icon name="route"></lucide-icon>
+          <span>View Stage</span>
+        </button>
+      </div>
+
+      <!-- PAYMENT INFO (only when Closed) -->
+      <div class="request-actions" *ngIf="request.status === 'Closed'" style="margin-top:8px;">
+        <button type="button" class="primary-action-button" style="width:100%;" (click)="showPaymentInfo(request)">
+          <lucide-icon name="credit-card"></lucide-icon>
+          <span>Payment Info</span>
+        </button>
+      </div>
+
+      <!-- APPROVE / REJECT -->
+      <div *ngIf="request.status === 'Pending'" class="decision-actions">
+        <button type="button" class="approve-button" [disabled]="isUpdatingRequest(request.driverRequestId)" (click)="approveRequest(request)">
+          <lucide-icon *ngIf="!isUpdatingRequest(request.driverRequestId)" name="check"></lucide-icon>
+          <lucide-icon *ngIf="isUpdatingRequest(request.driverRequestId)" name="loader-circle" class="button-spinner"></lucide-icon>
+          <span>Approve</span>
+        </button>
+        <button type="button" class="reject-button" [disabled]="isUpdatingRequest(request.driverRequestId)" (click)="rejectRequest(request)">
+          <lucide-icon name="x"></lucide-icon>
+          <span>Reject</span>
+        </button>
+      </div>
+
+    </article>
+  </section>
+
+  <!-- ================= PAGINATION BAR ================= -->
+  <div
+    *ngIf="!isLoading && filteredRequests.length > 0 && totalPages > 1"
+    class="requests-pagination"
+  >
+    <button
+      type="button"
+      class="pagination-button"
+      [disabled]="currentPage === 1"
+      (click)="prevPage()"
+    >
+      <lucide-icon name="chevron-left"></lucide-icon>
+      <span>Prev</span>
+    </button>
+
+    <button
+      type="button"
+      *ngFor="let page of pagesArray"
+      class="pagination-number"
+      [class.active-page]="page === currentPage"
+      (click)="goToPage(page)"
+    >
+      {{ page }}
+    </button>
+
+    <button
+      type="button"
+      class="pagination-button"
+      [disabled]="currentPage === totalPages"
+      (click)="nextPage()"
+    >
+      <span>Next</span>
+      <lucide-icon name="chevron-right"></lucide-icon>
+    </button>
+  </div>
+
+</div>
+
+<!-- ======================================================== -->
+<!-- DRIVER INFORMATION MODAL -->
+<!-- ======================================================== -->
+<div *ngIf="showDriverModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="driverModalTitle">
+  <div class="request-modal driver-information-modal">
+    <button type="button" class="modal-close-button" aria-label="Close driver information" (click)="closeDriverModal()">
+      <lucide-icon name="x"></lucide-icon>
+    </button>
+
+    <div class="modal-heading">
+      <div class="modal-heading-icon"><lucide-icon name="user-round-search"></lucide-icon></div>
+      <div>
+        <p>Driver Profile</p>
+        <h2 id="driverModalTitle">Driver Information</h2>
+      </div>
+    </div>
+
+    <ng-container *ngIf="selectedDriver">
+      <div class="modal-driver-profile">
+        <div class="modal-driver-avatar">
+          <img *ngIf="selectedDriver.image" [src]="selectedDriver.image" [alt]="selectedDriver.driverName" />
+          <span *ngIf="!selectedDriver.image">
+            {{ selectedDriver.driverName ? selectedDriver.driverName.charAt(0).toUpperCase() : 'D' }}
+          </span>
+        </div>
+        <div>
+          <h3>{{ selectedDriver.driverName }}</h3>
+          <p>{{ selectedDriver.licenseNumber }}</p>
+          <span class="modal-driver-status"
+            [ngClass]="{
+              'modal-status-available': selectedDriver.availabilityStatus === 'Available',
+              'modal-status-busy': selectedDriver.availabilityStatus === 'Busy',
+              'modal-status-offline': selectedDriver.availabilityStatus === 'Offline'
+            }">
+            {{ selectedDriver.availabilityStatus }}
+          </span>
+        </div>
+      </div>
+
+      <div class="modal-details-grid">
+        <div class="modal-detail-item">
+          <lucide-icon name="briefcase-business"></lucide-icon>
+          <div>
+            <span>Experience</span>
+            <strong>{{ selectedDriver.experienceYears }} Years</strong>
+          </div>
+        </div>
+        <div class="modal-detail-item">
+          <lucide-icon name="phone"></lucide-icon>
+          <div>
+            <span>Contact</span>
+            <strong>{{ selectedDriver.contactNumber }}</strong>
+          </div>
+        </div>
+        <div class="modal-detail-item">
+          <lucide-icon name="car-front"></lucide-icon>
+          <div>
+            <span>Vehicle</span>
+            <strong>{{ selectedDriver.vehicleType }}</strong>
+          </div>
+        </div>
+        <div class="modal-detail-item">
+          <lucide-icon name="indian-rupee"></lucide-icon>
+          <div>
+            <span>Hourly Rate</span>
+            <strong>₹{{ selectedDriver.hourlyRate }} / hour</strong>
+          </div>
+        </div>
+        <div class="modal-detail-item full-modal-detail">
+          <lucide-icon name="map-pin"></lucide-icon>
+          <div>
+            <span>Address</span>
+            <strong>{{ selectedDriver.address || 'Not Available' }}</strong>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <div *ngIf="!selectedDriver" class="modal-empty-state">
+      <lucide-icon name="user-x"></lucide-icon>
+      <h3>No Driver Assigned</h3>
+      <p>A driver has not been assigned to this request.</p>
+    </div>
+
+    <button type="button" class="modal-primary-button" (click)="closeDriverModal()">
+      <lucide-icon name="check"></lucide-icon>
+      <span>Done</span>
+    </button>
+  </div>
+</div>
+
+<!-- ======================================================== -->
+<!-- REQUEST STAGE MODAL -->
+<!-- ======================================================== -->
+<div *ngIf="showStageModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="stageModalTitle">
+  <div class="request-modal stage-modal">
+    <button type="button" class="modal-close-button" aria-label="Close request stage" [disabled]="isClosingRequest" (click)="closeStageModal()">
+      <lucide-icon name="x"></lucide-icon>
+    </button>
+
+    <div class="modal-heading">
+      <div class="modal-heading-icon"><lucide-icon name="route"></lucide-icon></div>
+      <div>
+        <p>Request Tracking</p>
+        <h2 id="stageModalTitle">Request Stage</h2>
+      </div>
+    </div>
+
+    <div *ngIf="selectedRequest" class="request-timeline">
+      <div class="timeline-item timeline-completed">
+        <div class="timeline-marker"><lucide-icon name="check"></lucide-icon></div>
+        <div class="timeline-content">
+          <strong>Request Submitted</strong>
+          <span>Customer request has been received.</span>
+        </div>
+      </div>
+
+      <div class="timeline-item"
+        [ngClass]="{
+          'timeline-completed': selectedRequest.status === 'Approved' || selectedRequest.status === 'Trip End' || selectedRequest.status === 'Closed',
+          'timeline-rejected': selectedRequest.status === 'Rejected',
+          'timeline-pending': selectedRequest.status === 'Pending'
+        }">
+        <div class="timeline-marker">
+          <lucide-icon [name]="selectedRequest.status === 'Rejected' ? 'x' : selectedRequest.status === 'Pending' ? 'clock-3' : 'check'"></lucide-icon>
+        </div>
+        <div class="timeline-content">
+          <strong>{{ selectedRequest.status === 'Rejected' ? 'Request Rejected' : 'Request Approved' }}</strong>
+          <span>
+            {{ selectedRequest.status === 'Rejected' ? 'The request was declined by the administrator.' : selectedRequest.status === 'Pending' ? 'Waiting for administrator approval.' : 'The driver request was approved.' }}
+          </span>
+        </div>
+      </div>
+
+      <div *ngIf="selectedRequest.status !== 'Rejected'" class="timeline-item"
+        [ngClass]="{
+          'timeline-completed': selectedRequest.status === 'Trip End' || selectedRequest.status === 'Closed',
+          'timeline-pending': selectedRequest.status !== 'Trip End' && selectedRequest.status !== 'Closed'
+        }">
+        <div class="timeline-marker">
+          <lucide-icon [name]="selectedRequest.status === 'Trip End' || selectedRequest.status === 'Closed' ? 'check' : 'flag'"></lucide-icon>
+        </div>
+        <div class="timeline-content">
+          <strong>Trip End</strong>
+          <span>{{ selectedRequest.status === 'Trip End' || selectedRequest.status === 'Closed' ? 'The assigned trip has ended.' : 'Waiting for the trip to finish.' }}</span>
+        </div>
+      </div>
+
+      <div *ngIf="selectedRequest.status !== 'Rejected'" class="timeline-item"
+        [ngClass]="{
+          'timeline-completed': selectedRequest.status === 'Closed',
+          'timeline-pending': selectedRequest.status !== 'Closed'
+        }">
+        <div class="timeline-marker">
+          <lucide-icon [name]="selectedRequest.status === 'Closed' ? 'check' : 'lock-keyhole'"></lucide-icon>
+        </div>
+        <div class="timeline-content">
+          <strong>Request Closed</strong>
+          <span>{{ selectedRequest.status === 'Closed' ? 'The request process has been completed.' : 'The request has not been closed.' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <button *ngIf="selectedRequest" type="button" class="close-request-button"
+      [disabled]="selectedRequest.status !== 'Trip End' || isClosingRequest"
+      (click)="closeRequest(selectedRequest)">
+      <lucide-icon *ngIf="!isClosingRequest" name="lock-keyhole"></lucide-icon>
+      <lucide-icon *ngIf="isClosingRequest" name="loader-circle" class="button-spinner"></lucide-icon>
+      <span>
+        {{ isClosingRequest ? 'Closing Request...' : selectedRequest.status === 'Trip End' ? 'Close Request' : selectedRequest.status === 'Closed' ? 'Request Closed' : 'Available After Trip End' }}
+      </span>
+    </button>
+  </div>
+</div>
+
+<!-- ======================================================== -->
+<!-- PAYMENT INFORMATION MODAL -->
+<!-- ======================================================== -->
+<div *ngIf="showPaymentInfoModal" class="modal-overlay" role="dialog" aria-modal="true">
+  <div class="request-modal driver-information-modal">
+    <button type="button" class="modal-close-button" aria-label="Close payment information" (click)="closePaymentInfo()">
+      <lucide-icon name="x"></lucide-icon>
+    </button>
+
+    <div class="modal-heading">
+      <div class="modal-heading-icon"><lucide-icon name="credit-card"></lucide-icon></div>
+      <div>
+        <p>Transaction Details</p>
+        <h2>Payment Information</h2>
+      </div>
+    </div>
+
+    <div *ngIf="selectedRequest" class="modal-details-grid">
+      <div class="modal-detail-item">
+        <lucide-icon name="circle-check"></lucide-icon>
+        <div>
+          <span>Status</span>
+          <strong>{{ selectedRequest.status || 'N/A' }}</strong>
+        </div>
+      </div>
+
+      <div class="modal-detail-item">
+        <lucide-icon name="indian-rupee"></lucide-icon>
+        <div>
+          <span>Amount Paid</span>
+          <strong>₹{{ selectedRequest.paymentAmount || 0 }}</strong>
+        </div>
+      </div>
+
+      <div class="modal-detail-item full-modal-detail">
+        <lucide-icon name="file-text"></lucide-icon>
+        <div>
+          <span>Razorpay Payment ID</span>
+          <strong>{{ selectedRequest.paymentId || 'Not Available' }}</strong>
+        </div>
+      </div>
+
+      <div class="modal-detail-item">
+        <lucide-icon name="car-front"></lucide-icon>
+        <div>
+          <span>Driver</span>
+          <strong>{{ selectedRequest.driver?.driverName || 'N/A' }}</strong>
+        </div>
+      </div>
+
+      <div class="modal-detail-item">
+        <lucide-icon name="calendar-days"></lucide-icon>
+        <div>
+          <span>Trip Date</span>
+          <strong>{{ formatTripDate(selectedRequest.tripDate) }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="modal-primary-button" (click)="closePaymentInfo()">
+      <lucide-icon name="check"></lucide-icon>
+      <span>Done</span>
+    </button>
+  </div>
+</div>

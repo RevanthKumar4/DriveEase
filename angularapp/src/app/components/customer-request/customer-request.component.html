@@ -1,0 +1,797 @@
+<div
+  [ngClass]="isDarkMode
+    ? 'bg-[#050505] text-slate-200'
+    : 'bg-[#e7e3dc] text-[#25231f]'"
+  class="customer-request-page cube-enter w-full h-full overflow-y-auto flex flex-col font-sans p-4 sm:p-5 md:px-6 md:py-5 relative box-border pointer-events-auto transition-colors duration-500">
+
+  <!-- ================= HEADER ================= -->
+  <div
+    [ngClass]="isDarkMode ? 'border-white/5' : 'border-[#cec7bd]'"
+    class="customer-request-header flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4 shrink-0 w-full border-b pb-3">
+
+    <div class="flex items-center gap-3">
+      <div
+        [ngClass]="isDarkMode
+          ? 'bg-gradient-to-br from-red-500/20 to-orange-500/10 text-red-500 shadow-[0_0_15px_rgba(239,68,68,0.15)] border-red-500/20'
+          : 'bg-gradient-to-br from-[#a9420c] via-[#c95812] to-[#dc7a39] text-white shadow-[0_8px_18px_rgba(169,66,12,0.30)] border-[#c95812]'"
+        class="p-2 rounded-lg border">
+        <lucide-icon name="calendar-clock" class="w-5 h-5 sm:w-6 sm:h-6"></lucide-icon>
+      </div>
+
+      <div>
+        <h3 class="text-lg sm:text-xl md:text-2xl font-extrabold tracking-tight drop-shadow-md">
+          <span [ngClass]="isDarkMode ? 'text-white' : 'text-[#25231f]'">
+            {{ isEditMode ? 'Edit' : 'New' }}
+          </span>
+          <span
+            [ngClass]="isDarkMode
+              ? 'from-red-500 to-orange-400'
+              : 'from-[#a9420c] via-[#c95812] to-[#dc7a39]'"
+            class="bg-gradient-to-r bg-clip-text text-transparent ml-1">
+            Booking
+          </span>
+        </h3>
+
+        <p
+          [ngClass]="isDarkMode ? 'text-slate-400' : 'text-[#686158]'"
+          class="text-[11px] font-medium mt-0.5 tracking-wide">
+          {{ isEditMode ? 'Update your trip request details' : 'Schedule your next trip with DriveU' }}
+        </p>
+      </div>
+    </div>
+
+    <button
+      type="button"
+      (click)="goBack()"
+      [ngClass]="isDarkMode
+        ? 'bg-slate-800/40 hover:bg-red-500/10 text-slate-300 hover:text-red-400 border-slate-700 hover:border-red-500/30'
+        : 'bg-[#f0ece5] hover:bg-[#f1dccb] text-[#686158] hover:text-[#a9420c] border-[#cec7bd] hover:border-[#c95812]'"
+      class="group flex items-center gap-2 px-3 sm:px-4 py-2 text-[11px] font-bold uppercase tracking-widest rounded-lg transition-all duration-300 border shadow-lg cursor-pointer">
+      <lucide-icon name="chevron-left" class="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform"></lucide-icon>
+      Back
+    </button>
+  </div>
+
+  <!-- ================= FORM CONTAINER ================= -->
+  <div class="customer-request-form-wrapper w-full flex justify-center items-start">
+
+    <div
+      [ngClass]="isDarkMode
+        ? 'bg-[#13151a]/90 border-white/10'
+        : 'bg-[#f0ece5]/95 border-[#cec7bd]'"
+      class="customer-request-card w-full max-w-2xl backdrop-blur-xl border rounded-2xl p-4 sm:p-5 shadow-[0_8px_30px_rgb(0,0,0,0.15)] relative transition-colors duration-500">
+
+      <form
+        #requestForm="ngForm"
+        (ngSubmit)="submitRequest(requestForm)"
+        class="customer-request-scroll-area space-y-3.5">
+
+        <!-- ================= ROW 1: DATE AND TIME ================= -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+          <!-- Trip Date -->
+          <div>
+            <label
+              [ngClass]="isDarkMode ? 'text-slate-400' : 'text-[#686158]'"
+              class="flex items-center gap-1 text-[10px] uppercase font-bold mb-1 tracking-widest">
+              <lucide-icon name="calendar-days"
+                [ngClass]="isDarkMode ? 'text-orange-400' : 'text-[#c95812]'"
+                class="w-3 h-3"></lucide-icon>
+              Trip Date
+              <span [ngClass]="isDarkMode ? 'text-red-500' : 'text-[#a9420c]'">*</span>
+            </label>
+
+            <div class="relative group">
+              <div
+                [ngClass]="isDarkMode ? 'text-slate-400 group-hover:text-orange-400' : 'text-[#82796e] group-hover:text-[#c95812]'"
+                class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                <lucide-icon name="calendar-days" class="w-4 h-4"></lucide-icon>
+              </div>
+
+              <input
+                type="text"
+                [value]="displayDate"
+                readonly
+                [ngClass]="isDarkMode
+                  ? 'bg-black/50 border-white/10 text-slate-200 focus:border-orange-500/50 hover:bg-black/70'
+                  : 'bg-[#e7e3dc] border-[#cec7bd] text-[#25231f] focus:border-[#c95812] hover:bg-[#e1dbd2]'"
+                class="w-full pl-10 pr-12 py-2.5 border rounded-lg text-sm font-medium focus:outline-none transition-all shadow-inner cursor-pointer"
+                name="tripDateDisplay"
+                placeholder="Select trip date"
+                (click)="openDatePopup()"
+                (focus)="openDatePopup()" />
+
+              <input
+                type="hidden"
+                name="tripDate"
+                [(ngModel)]="driverRequest.tripDate"
+                required
+                #tripDate="ngModel" />
+
+              <button
+                type="button"
+                (click)="openDatePopup()"
+                [ngClass]="isDarkMode
+                  ? 'from-red-600 to-orange-500 border-orange-500/30'
+                  : 'from-[#a9420c] via-[#c95812] to-[#dc7a39] border-[#c95812]/40'"
+                class="date-time-icon-btn absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg border flex items-center justify-center shadow-md transition-all bg-gradient-to-r text-white">
+                <lucide-icon name="calendar-days" class="w-4 h-4 text-white"></lucide-icon>
+              </button>
+            </div>
+          </div>
+
+          <!-- Time Slot -->
+          <div>
+            <label
+              [ngClass]="isDarkMode ? 'text-slate-400' : 'text-[#686158]'"
+              class="flex items-center gap-1 text-[10px] uppercase font-bold mb-1 tracking-widest">
+              <lucide-icon name="clock-3"
+                [ngClass]="isDarkMode ? 'text-white' : 'text-black'"
+                class="w-3 h-3"></lucide-icon>
+              Time Slot
+              <span [ngClass]="isDarkMode ? 'text-red-500' : 'text-[#a9420c]'">*</span>
+            </label>
+
+            <div class="relative group">
+              <div
+                [ngClass]="isDarkMode ? 'text-white' : 'text-black'"
+                class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                <lucide-icon name="clock-3" class="w-4 h-4"></lucide-icon>
+              </div>
+
+              <input
+                type="text"
+                [value]="displayTime"
+                readonly
+                [ngClass]="isDarkMode
+                  ? 'bg-black/50 border-white/10 text-slate-200 focus:border-orange-500/50 hover:bg-black/70'
+                  : 'bg-[#e7e3dc] border-[#cec7bd] text-[#25231f] focus:border-[#c95812] hover:bg-[#e1dbd2]'"
+                class="w-full pl-10 pr-12 py-2.5 border rounded-lg text-sm font-medium focus:outline-none transition-all shadow-inner cursor-pointer"
+                name="timeSlotDisplay"
+                placeholder="Select time"
+                (click)="openTimePopup()"
+                (focus)="openTimePopup()" />
+
+              <input
+                type="hidden"
+                name="timeSlot"
+                [(ngModel)]="driverRequest.timeSlot"
+                required
+                #timeSlot="ngModel" />
+
+<button
+type="button"
+(click)="openTimePopup()"
+[ngClass]="isDarkMode
+  ? 'from-red-600 to-orange-500 border-orange-500/30'
+  : 'from-[#a9420c] via-[#c95812] to-[#dc7a39] border-[#c95812]/40'"
+class="date-time-icon-btn absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg border flex items-center justify-center shadow-md transition-all bg-gradient-to-r text-white">
+<lucide-icon name="clock-3" class="w-4 h-4 text-white"></lucide-icon>
+</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= ROW 2: LOCATIONS ================= -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+          <!-- Pickup Location -->
+          <div class="relative">
+            <label
+              [ngClass]="isDarkMode ? 'text-slate-400' : 'text-[#686158]'"
+              class="flex items-center gap-1 text-[10px] uppercase font-bold mb-1 tracking-widest">
+              <lucide-icon name="map-pin" class="w-3 h-3 text-emerald-500"></lucide-icon>
+              Pickup Location
+              <span class="text-emerald-500">*</span>
+            </label>
+
+            <div class="relative group">
+              <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-emerald-500">
+                <lucide-icon name="map-pin" class="w-4 h-4"></lucide-icon>
+              </div>
+
+              <input
+                type="text"
+                [ngClass]="isDarkMode
+                  ? 'bg-black/50 border-white/10 text-slate-200 placeholder-slate-600 focus:border-emerald-500/50 hover:bg-black/70'
+                  : 'bg-[#e7e3dc] border-[#cec7bd] text-[#25231f] placeholder-[#82796e] focus:border-emerald-600 hover:bg-[#e1dbd2]'"
+                class="w-full pl-10 pr-24 py-2.5 border rounded-lg text-sm font-medium focus:outline-none transition-all shadow-inner cursor-pointer"
+                name="pickupLocation"
+                [(ngModel)]="driverRequest.pickupLocation"
+                required
+                readonly
+                placeholder="Enter pickup address"
+                (click)="openPickupMap()"
+                (focus)="openPickupMap()" />
+
+              <button
+                type="button"
+                (click)="openPickupMap()"
+                class="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-bold px-3 py-1.5 rounded-md bg-gradient-to-r from-emerald-600 to-emerald-500 text-white shadow">
+                Map
+              </button>
+            </div>
+          </div>
+
+          <!-- Drop Location -->
+          <div class="relative">
+            <label
+              [ngClass]="isDarkMode ? 'text-slate-400' : 'text-[#686158]'"
+              class="flex items-center gap-1 text-[10px] uppercase font-bold mb-1 tracking-widest">
+              <lucide-icon name="navigation"
+                [ngClass]="isDarkMode ? 'text-red-500' : 'text-[#a9420c]'"
+                class="w-3 h-3"></lucide-icon>
+              Drop Location
+              <span [ngClass]="isDarkMode ? 'text-red-500' : 'text-[#a9420c]'">*</span>
+            </label>
+
+            <div class="relative group">
+              <div
+                [ngClass]="isDarkMode ? 'text-red-500/70 group-hover:text-red-400' : 'text-[#a9420c]/80 group-hover:text-[#c95812]'"
+                class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                <lucide-icon name="navigation" class="w-4 h-4"></lucide-icon>
+              </div>
+
+              <input
+                type="text"
+                [ngClass]="isDarkMode
+                  ? 'bg-black/50 border-white/10 text-slate-200 placeholder-slate-600 focus:border-red-500/50 hover:bg-black/70'
+                  : 'bg-[#e7e3dc] border-[#cec7bd] text-[#25231f] placeholder-[#82796e] focus:border-[#c95812] hover:bg-[#e1dbd2]'"
+                class="w-full pl-10 pr-24 py-2.5 border rounded-lg text-sm font-medium focus:outline-none transition-all shadow-inner cursor-pointer"
+                name="dropLocation"
+                [(ngModel)]="driverRequest.dropLocation"
+                required
+                readonly
+                placeholder="Enter destination address"
+                (click)="openDropMap()"
+                (focus)="openDropMap()" />
+
+              <button
+                type="button"
+                (click)="openDropMap()"
+                [ngClass]="isDarkMode
+                  ? 'from-red-600 to-orange-500'
+                  : 'from-[#a9420c] via-[#c95812] to-[#dc7a39]'"
+                class="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-bold px-3 py-1.5 rounded-md bg-gradient-to-r text-white shadow">
+                Map
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Location validation message -->
+        <p *ngIf="locationError"
+           [ngClass]="isDarkMode ? 'text-red-400' : 'text-[#a9420c]'"
+           class="text-[11px] font-semibold -mt-1 flex items-center gap-1">
+          <lucide-icon name="alert-circle" class="w-3.5 h-3.5"></lucide-icon>
+          {{ locationError }}
+        </p>
+
+        <!-- ================= ESTIMATED DURATION ================= -->
+        <div>
+          <label
+            [ngClass]="isDarkMode ? 'text-slate-400' : 'text-[#686158]'"
+            class="flex items-center gap-1 text-[10px] uppercase font-bold mb-1 tracking-widest">
+            <lucide-icon name="timer"
+              [ngClass]="isDarkMode ? 'text-orange-500' : 'text-[#c95812]'"
+              class="w-3 h-3"></lucide-icon>
+            Estimated Duration
+            <span [ngClass]="isDarkMode ? 'text-orange-500' : 'text-[#a9420c]'">*</span>
+          </label>
+
+          <div class="relative group">
+            <div
+              [ngClass]="isDarkMode ? 'text-slate-400 group-hover:text-orange-400' : 'text-[#82796e] group-hover:text-[#c95812]'"
+              class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+              <lucide-icon name="timer" class="w-4 h-4"></lucide-icon>
+            </div>
+
+            <input
+              type="text"
+              [ngClass]="isDarkMode
+                ? 'bg-black/50 border-white/10 text-slate-200 placeholder-slate-600 focus:border-orange-500/50 hover:bg-black/70'
+                : 'bg-[#e7e3dc] border-[#cec7bd] text-[#25231f] placeholder-[#82796e] focus:border-[#c95812] hover:bg-[#e1dbd2]'"
+              class="w-full pl-10 pr-3 py-2.5 border rounded-lg text-sm font-medium focus:outline-none transition-all shadow-inner"
+              name="estimatedDuration"
+              [(ngModel)]="driverRequest.estimatedDuration"
+              required
+              (input)="validateDuration()"
+              placeholder="e.g. 3 Hours, 2 Days" />
+          </div>
+
+          <p *ngIf="durationError"
+             [ngClass]="isDarkMode ? 'text-red-400' : 'text-[#a9420c]'"
+             class="text-[11px] font-semibold mt-1 flex items-center gap-1">
+            <lucide-icon name="alert-circle" class="w-3.5 h-3.5"></lucide-icon>
+            {{ durationError }}
+          </p>
+        </div>
+
+        <!-- ================= COMMENTS ================= -->
+        <div>
+          <label
+            [ngClass]="isDarkMode ? 'text-slate-400' : 'text-[#686158]'"
+            class="flex items-center gap-1 text-[10px] uppercase font-bold mb-1 tracking-widest">
+            <lucide-icon name="message-square"
+              [ngClass]="isDarkMode ? 'text-orange-400' : 'text-[#c95812]'"
+              class="w-3 h-3"></lucide-icon>
+            Comments
+            <span [ngClass]="isDarkMode ? 'text-slate-600' : 'text-[#82796e]'">(Optional)</span>
+          </label>
+
+          <div class="relative group">
+            <div
+              [ngClass]="isDarkMode ? 'text-slate-400 group-hover:text-orange-400' : 'text-[#82796e] group-hover:text-[#c95812]'"
+              class="absolute top-2.5 left-3 flex items-center pointer-events-none">
+              <lucide-icon name="message-square" class="w-4 h-4"></lucide-icon>
+            </div>
+
+            <textarea
+              rows="2"
+              [ngClass]="isDarkMode
+                ? 'bg-black/50 border-white/10 text-slate-200 placeholder-slate-600 focus:border-orange-500/50 hover:bg-black/70'
+                : 'bg-[#e7e3dc] border-[#cec7bd] text-[#25231f] placeholder-[#82796e] focus:border-[#c95812] hover:bg-[#e1dbd2]'"
+              class="w-full pl-10 pr-3 py-2.5 border rounded-lg text-sm font-medium focus:outline-none transition-all shadow-inner resize-none custom-scrollbar"
+              name="comments"
+              [(ngModel)]="driverRequest.comments"
+              placeholder="Any specific instructions for the driver?"></textarea>
+          </div>
+        </div>
+
+        <!-- ================= ACTION BUTTON ================= -->
+        <div
+          [ngClass]="isDarkMode ? 'border-white/5' : 'border-[#cec7bd]'"
+          class="pt-3 mt-1 flex justify-end border-t">
+
+          <button
+            type="submit"
+            [disabled]="requestForm.invalid || isSubmitting || !!locationError || !!durationError"
+            [ngClass]="isDarkMode
+              ? 'from-red-600 to-orange-500 shadow-[0_0_20px_-5px_rgba(239,68,68,0.5)]'
+              : 'from-[#a9420c] via-[#c95812] to-[#dc7a39] shadow-[0_10px_25px_rgba(169,66,12,0.30)]'"
+            class="inline-flex items-center gap-2 w-full sm:w-auto justify-center px-8 py-2.5 bg-gradient-to-r text-white text-[11px] font-extrabold uppercase tracking-widest rounded-lg transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:shadow-none">
+
+            <span *ngIf="isSubmitting" class="inline-flex items-center gap-2">
+              <span class="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+              {{ isEditMode ? 'Updating...' : 'Submitting...' }}
+            </span>
+
+            <span *ngIf="!isSubmitting" class="inline-flex items-center gap-2">
+              <lucide-icon name="check" class="w-3.5 h-3.5"></lucide-icon>
+              {{ isEditMode ? 'Update Request' : 'Confirm Request' }}
+            </span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ================= PICKUP MAP POPUP ================= -->
+<div
+  *ngIf="showPickupMap"
+  [ngClass]="isDarkMode ? 'bg-black/60' : 'bg-[#25231f]/55'"
+  class="fixed inset-0 z-[9999] flex items-center justify-center backdrop-blur-sm px-4">
+
+  <div
+    [ngClass]="isDarkMode
+      ? 'bg-[#13151a] border-white/10 text-slate-200'
+      : 'bg-[#f0ece5] border-[#cec7bd] text-[#25231f]'"
+    class="w-full max-w-4xl max-h-[90vh] rounded-2xl border shadow-2xl overflow-hidden flex flex-col">
+
+    <div
+      [ngClass]="isDarkMode ? 'border-white/10 bg-black/30' : 'border-[#cec7bd] bg-[#e7e3dc]'"
+      class="flex items-center justify-between gap-3 px-4 sm:px-5 py-3 border-b shrink-0">
+
+      <div class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-lg">
+          <lucide-icon name="map-pin" class="w-5 h-5"></lucide-icon>
+        </div>
+
+        <div>
+          <h3 [ngClass]="isDarkMode ? 'text-white' : 'text-[#25231f]'"
+              class="text-sm sm:text-base font-extrabold">Select Pickup Location</h3>
+          <p [ngClass]="isDarkMode ? 'text-slate-400' : 'text-[#686158]'"
+             class="text-[11px] font-medium">Search, use current location, or click on map</p>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        (click)="closePickupMap()"
+        [ngClass]="isDarkMode
+          ? 'bg-white/5 hover:bg-red-500/10 text-white hover:text-red-400 border-white/10'
+          : 'bg-[#f0ece5] hover:bg-[#f1dccb] text-[#a9420c] border-[#cec7bd] hover:border-[#c95812]'"
+        class="w-9 h-9 rounded-full flex items-center justify-center border transition-all">
+        <lucide-icon name="x" class="w-5 h-5"></lucide-icon>
+      </button>
+    </div>
+
+    <div class="p-4 sm:p-5 overflow-y-auto custom-scrollbar space-y-3">
+
+      <div class="relative">
+        <lucide-icon name="search"
+          [ngClass]="isDarkMode ? 'text-slate-400' : 'text-[#c95812]'"
+          class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4"></lucide-icon>
+
+        <input
+          type="text"
+          [ngClass]="isDarkMode
+            ? 'bg-black/50 border-white/10 text-slate-200 placeholder-slate-600 focus:border-emerald-500/50'
+            : 'bg-[#e7e3dc] border-[#cec7bd] text-[#25231f] placeholder-[#82796e] focus:border-emerald-600'"
+          class="w-full pl-10 pr-3 py-3 border rounded-xl text-sm font-semibold focus:outline-none shadow-inner"
+          name="pickupLocationPopup"
+          [(ngModel)]="driverRequest.pickupLocation"
+          [ngModelOptions]="{ standalone: true }"
+          placeholder="Search pickup location"
+          (input)="searchLocation('pickup')" />
+      </div>
+
+      <div *ngIf="pickupSuggestions.length > 0"
+        [ngClass]="isDarkMode ? 'bg-[#13151a] border-white/10' : 'bg-[#f0ece5] border-[#cec7bd]'"
+        class="location-suggestion-box rounded-xl border shadow-lg overflow-hidden">
+        <button
+          type="button"
+          *ngFor="let location of pickupSuggestions"
+          (click)="selectLocation('pickup', location)"
+          [ngClass]="isDarkMode
+            ? 'text-slate-200 hover:bg-white/10 border-white/5'
+            : 'text-[#25231f] hover:bg-[#f1dccb] border-[#cec7bd]'"
+          class="block w-full text-left px-3 py-2 text-xs font-semibold border-b">
+          {{ location.display_name }}
+        </button>
+      </div>
+
+      <div class="flex justify-end" *ngIf="currentLocationUsedBy !== 'drop'">
+        <button
+          type="button"
+          (click)="useCurrentLocation('pickup')"
+          class="text-[11px] font-extrabold px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white shadow-md transition-all">
+          Use Current Location
+        </button>
+      </div>
+
+      <div id="pickupMap" class="location-map popup-location-map"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= DROP MAP POPUP ================= -->
+<div
+  *ngIf="showDropMap"
+  [ngClass]="isDarkMode ? 'bg-black/60' : 'bg-[#25231f]/55'"
+  class="fixed inset-0 z-[9999] flex items-center justify-center backdrop-blur-sm px-4">
+
+  <div
+    [ngClass]="isDarkMode
+      ? 'bg-[#13151a] border-white/10 text-slate-200'
+      : 'bg-[#f0ece5] border-[#cec7bd] text-[#25231f]'"
+    class="w-full max-w-4xl max-h-[90vh] rounded-2xl border shadow-2xl overflow-hidden flex flex-col">
+
+    <div
+      [ngClass]="isDarkMode ? 'border-white/10 bg-black/30' : 'border-[#cec7bd] bg-[#e7e3dc]'"
+      class="flex items-center justify-between gap-3 px-4 sm:px-5 py-3 border-b shrink-0">
+
+      <div class="flex items-center gap-2">
+        <div
+          [ngClass]="isDarkMode ? 'from-red-600 to-orange-500' : 'from-[#a9420c] via-[#c95812] to-[#dc7a39]'"
+          class="w-9 h-9 rounded-xl bg-gradient-to-r text-white flex items-center justify-center shadow-lg">
+          <lucide-icon name="navigation" class="w-5 h-5"></lucide-icon>
+        </div>
+
+        <div>
+          <h3 [ngClass]="isDarkMode ? 'text-white' : 'text-[#25231f]'"
+              class="text-sm sm:text-base font-extrabold">Select Drop Location</h3>
+          <p [ngClass]="isDarkMode ? 'text-slate-400' : 'text-[#686158]'"
+             class="text-[11px] font-medium">Search, use current location, or click on map</p>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        (click)="closeDropMap()"
+        [ngClass]="isDarkMode
+          ? 'bg-white/5 hover:bg-red-500/10 text-white hover:text-red-400 border-white/10'
+          : 'bg-[#f0ece5] hover:bg-[#f1dccb] text-[#a9420c] border-[#cec7bd] hover:border-[#c95812]'"
+        class="w-9 h-9 rounded-full flex items-center justify-center border transition-all">
+        <lucide-icon name="x" class="w-5 h-5"></lucide-icon>
+      </button>
+    </div>
+
+    <div class="p-4 sm:p-5 overflow-y-auto custom-scrollbar space-y-3">
+
+      <div class="relative">
+        <lucide-icon name="search"
+          [ngClass]="isDarkMode ? 'text-slate-400' : 'text-[#c95812]'"
+          class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4"></lucide-icon>
+
+        <input
+          type="text"
+          [ngClass]="isDarkMode
+            ? 'bg-black/50 border-white/10 text-slate-200 placeholder-slate-600 focus:border-orange-500/50'
+            : 'bg-[#e7e3dc] border-[#cec7bd] text-[#25231f] placeholder-[#82796e] focus:border-[#c95812]'"
+          class="w-full pl-10 pr-3 py-3 border rounded-xl text-sm font-semibold focus:outline-none shadow-inner"
+          name="dropLocationPopup"
+          [(ngModel)]="driverRequest.dropLocation"
+          [ngModelOptions]="{ standalone: true }"
+          placeholder="Search drop location"
+          (input)="searchLocation('drop')" />
+      </div>
+
+      <div *ngIf="dropSuggestions.length > 0"
+        [ngClass]="isDarkMode ? 'bg-[#13151a] border-white/10' : 'bg-[#f0ece5] border-[#cec7bd]'"
+        class="location-suggestion-box rounded-xl border shadow-lg overflow-hidden">
+        <button
+          type="button"
+          *ngFor="let location of dropSuggestions"
+          (click)="selectLocation('drop', location)"
+          [ngClass]="isDarkMode
+            ? 'text-slate-200 hover:bg-white/10 border-white/5'
+            : 'text-[#25231f] hover:bg-[#f1dccb] border-[#cec7bd]'"
+          class="block w-full text-left px-3 py-2 text-xs font-semibold border-b">
+          {{ location.display_name }}
+        </button>
+      </div>
+
+      <div class="flex justify-end" *ngIf="currentLocationUsedBy !== 'pickup'">
+        <button
+          type="button"
+          (click)="useCurrentLocation('drop')"
+          [ngClass]="isDarkMode ? 'from-red-600 to-orange-500' : 'from-[#a9420c] via-[#c95812] to-[#dc7a39]'"
+          class="text-[11px] font-extrabold px-4 py-2 rounded-lg bg-gradient-to-r text-white shadow-md transition-all">
+          Use Current Location
+        </button>
+      </div>
+
+      <div id="dropMap" class="location-map popup-location-map"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= CUSTOM DATE PICKER POPUP ================= -->
+<div
+  *ngIf="showDatePopup"
+  [ngClass]="isDarkMode ? 'bg-black/60' : 'bg-[#25231f]/55'"
+  class="fixed inset-0 z-[9999] flex items-center justify-center backdrop-blur-sm px-4">
+
+  <div
+    [ngClass]="isDarkMode
+      ? 'bg-[#13151a] border-white/10 text-slate-200'
+      : 'bg-[#f0ece5] border-[#cec7bd] text-[#25231f]'"
+    class="w-full max-w-md rounded-2xl border shadow-2xl overflow-hidden">
+
+    <div
+      [ngClass]="isDarkMode ? 'border-white/10 bg-black/30' : 'border-[#cec7bd] bg-[#e7e3dc]'"
+      class="flex items-center justify-between px-4 py-3 border-b">
+
+      <div class="flex items-center gap-2">
+        <div
+          [ngClass]="isDarkMode ? 'from-red-600 to-orange-500' : 'from-[#a9420c] via-[#c95812] to-[#dc7a39]'"
+          class="w-10 h-10 rounded-xl bg-gradient-to-r text-white flex items-center justify-center shadow-lg">
+          <lucide-icon name="calendar-days" class="w-5 h-5 text-white"></lucide-icon>
+        </div>
+
+        <div>
+          <h3 [ngClass]="isDarkMode ? 'text-white' : 'text-[#25231f]'"
+              class="text-sm font-extrabold">Select Trip Date</h3>
+          <p [ngClass]="isDarkMode ? 'text-slate-400' : 'text-[#686158]'"
+             class="text-[11px] font-medium">Choose your booking date</p>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        (click)="closeDatePopup()"
+        [ngClass]="isDarkMode
+          ? 'bg-white/5 hover:bg-red-500/10 text-white hover:text-red-400 border-white/10'
+          : 'bg-[#f0ece5] hover:bg-[#f1dccb] text-[#a9420c] border-[#cec7bd] hover:border-[#c95812]'"
+        class="w-9 h-9 rounded-full border flex items-center justify-center transition-all">
+        <lucide-icon name="x" class="w-5 h-5"></lucide-icon>
+      </button>
+    </div>
+
+    <div [ngClass]="isDarkMode ? 'bg-[#13151a]' : 'bg-[#f0ece5]'" class="p-4">
+
+      <div class="flex items-center justify-between mb-4">
+        <button
+          type="button"
+          (click)="previousMonth()"
+          [ngClass]="isDarkMode ? 'hover:bg-white/10 text-white' : 'hover:bg-[#f1dccb] text-[#a9420c]'"
+          class="w-9 h-9 rounded-lg flex items-center justify-center transition-all">
+          <lucide-icon name="chevron-left" class="w-5 h-5"></lucide-icon>
+        </button>
+
+        <h4 [ngClass]="isDarkMode ? 'text-white' : 'text-[#25231f]'"
+            class="text-sm font-extrabold tracking-wide">
+          {{ currentMonthLabel }}
+        </h4>
+
+        <button
+          type="button"
+          (click)="nextMonth()"
+          [ngClass]="isDarkMode ? 'hover:bg-white/10 text-white' : 'hover:bg-[#f1dccb] text-[#a9420c]'"
+          class="w-9 h-9 rounded-lg flex items-center justify-center transition-all">
+          <lucide-icon name="chevron-right" class="w-5 h-5"></lucide-icon>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-7 gap-2 mb-2">
+        <div *ngFor="let day of weekDays"
+          [ngClass]="isDarkMode ? 'text-slate-400' : 'text-[#686158]'"
+          class="text-center text-[10px] font-extrabold uppercase">
+          {{ day }}
+        </div>
+      </div>
+
+      <div class="grid grid-cols-7 gap-2">
+        <button
+          type="button"
+          *ngFor="let day of calendarDays"
+          (click)="selectDate(day)"
+          [disabled]="!day.currentMonth || day.disabled"
+          [ngClass]="{
+            'opacity-30 cursor-not-allowed': !day.currentMonth || day.disabled,
+            'bg-gradient-to-r from-red-600 to-orange-500 text-white shadow-lg': isDarkMode && day.fullDate === driverRequest.tripDate,
+            'bg-gradient-to-r from-[#a9420c] via-[#c95812] to-[#dc7a39] text-white shadow-lg': !isDarkMode && day.fullDate === driverRequest.tripDate,
+            'text-slate-200 hover:bg-white/10': isDarkMode && !day.disabled && day.fullDate !== driverRequest.tripDate,
+            'text-[#25231f] hover:bg-[#f1dccb]': !isDarkMode && !day.disabled && day.fullDate !== driverRequest.tripDate
+          }"
+          class="h-10 rounded-xl text-xs font-extrabold transition-all">
+          {{ day.date }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= CUSTOM TIME PICKER POPUP (12H + AM/PM) ================= -->
+<div
+  *ngIf="showTimePopup"
+  [ngClass]="isDarkMode ? 'bg-black/60' : 'bg-[#25231f]/55'"
+  class="fixed inset-0 z-[9999] flex items-center justify-center backdrop-blur-sm px-4">
+
+  <div
+    [ngClass]="isDarkMode
+      ? 'bg-[#13151a] border-white/10 text-slate-200'
+      : 'bg-[#f0ece5] border-[#cec7bd] text-[#25231f]'"
+    class="w-full max-w-md rounded-2xl border shadow-2xl overflow-hidden">
+
+    <div
+      [ngClass]="isDarkMode ? 'border-white/10 bg-black/30' : 'border-[#cec7bd] bg-[#e7e3dc]'"
+      class="flex items-center justify-between px-4 py-3 border-b">
+
+      <div class="flex items-center gap-2">
+        <div
+          [ngClass]="isDarkMode ? 'bg-white/10 text-white' : 'bg-[#25231f]/10 text-black'"
+          class="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg">
+          <lucide-icon name="clock-3" class="w-5 h-5"></lucide-icon>
+        </div>
+
+        <div>
+          <h3 [ngClass]="isDarkMode ? 'text-white' : 'text-[#25231f]'"
+              class="text-sm font-extrabold">Select Time Slot</h3>
+          <p [ngClass]="isDarkMode ? 'text-slate-400' : 'text-[#686158]'"
+             class="text-[11px] font-medium">Pick hour, minute and AM / PM</p>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        (click)="closeTimePopup()"
+        [ngClass]="isDarkMode
+          ? 'bg-white/5 hover:bg-red-500/10 text-white hover:text-red-400 border-white/10'
+          : 'bg-[#f0ece5] hover:bg-[#f1dccb] text-[#a9420c] border-[#cec7bd] hover:border-[#c95812]'"
+        class="w-9 h-9 rounded-full border flex items-center justify-center transition-all">
+        <lucide-icon name="x" class="w-5 h-5"></lucide-icon>
+      </button>
+    </div>
+
+    <div [ngClass]="isDarkMode ? 'bg-[#13151a]' : 'bg-[#f0ece5]'" class="p-4 space-y-4">
+
+      <!-- Live preview -->
+      <div class="flex justify-center items-center gap-3">
+        <div [ngClass]="isDarkMode ? 'bg-black/40 border-white/10 text-white' : 'bg-[#e7e3dc] border-[#cec7bd] text-[#25231f]'"
+             class="px-5 py-3 rounded-2xl border text-3xl font-extrabold">{{ selectedHour12 }}</div>
+        <span [ngClass]="isDarkMode ? 'text-orange-400' : 'text-[#c95812]'" class="text-3xl font-extrabold">:</span>
+        <div [ngClass]="isDarkMode ? 'bg-black/40 border-white/10 text-white' : 'bg-[#e7e3dc] border-[#cec7bd] text-[#25231f]'"
+             class="px-5 py-3 rounded-2xl border text-3xl font-extrabold">{{ selectedMinute }}</div>
+        <div [ngClass]="isDarkMode ? 'bg-black/40 border-white/10 text-white' : 'bg-[#e7e3dc] border-[#cec7bd] text-[#25231f]'"
+             class="px-4 py-3 rounded-2xl border text-2xl font-extrabold">{{ selectedPeriod }}</div>
+      </div>
+
+      <!-- AM / PM -->
+      <div class="grid grid-cols-2 gap-2">
+        <button type="button" (click)="selectPeriod('AM')"
+          [ngClass]="selectedPeriod === 'AM'
+            ? (isDarkMode ? 'bg-gradient-to-r from-red-600 to-orange-500 text-white' : 'bg-gradient-to-r from-[#a9420c] via-[#c95812] to-[#dc7a39] text-white')
+            : (isDarkMode ? 'bg-white/5 text-slate-200 hover:bg-white/10' : 'bg-[#e7e3dc] text-[#a9420c] hover:bg-[#f1dccb]')"
+          class="py-2.5 rounded-lg text-sm font-extrabold transition-all">AM</button>
+
+        <button type="button" (click)="selectPeriod('PM')"
+          [ngClass]="selectedPeriod === 'PM'
+            ? (isDarkMode ? 'bg-gradient-to-r from-red-600 to-orange-500 text-white' : 'bg-gradient-to-r from-[#a9420c] via-[#c95812] to-[#dc7a39] text-white')
+            : (isDarkMode ? 'bg-white/5 text-slate-200 hover:bg-white/10' : 'bg-[#e7e3dc] text-[#a9420c] hover:bg-[#f1dccb]')"
+          class="py-2.5 rounded-lg text-sm font-extrabold transition-all">PM</button>
+      </div>
+
+      <!-- Hours 1-12 -->
+      <div>
+        <p [ngClass]="isDarkMode ? 'text-slate-400' : 'text-[#686158]'"
+           class="text-[10px] uppercase font-extrabold tracking-widest mb-2">Hour</p>
+        <div class="grid grid-cols-6 gap-2">
+          <button type="button" *ngFor="let hour of hours12" (click)="selectHour(hour)"
+            [ngClass]="hour === selectedHour12
+              ? (isDarkMode ? 'bg-gradient-to-r from-red-600 to-orange-500 text-white shadow-md' : 'bg-gradient-to-r from-[#a9420c] via-[#c95812] to-[#dc7a39] text-white shadow-md')
+              : (isDarkMode ? 'bg-white/5 hover:bg-white/10 text-slate-200' : 'bg-[#e7e3dc] hover:bg-[#f1dccb] text-[#a9420c]')"
+            class="py-2 rounded-lg text-xs font-extrabold transition-all">{{ hour }}</button>
+        </div>
+      </div>
+
+      <!-- Minutes -->
+      <div>
+        <p [ngClass]="isDarkMode ? 'text-slate-400' : 'text-[#686158]'"
+           class="text-[10px] uppercase font-extrabold tracking-widest mb-2">Minute</p>
+        <div class="grid grid-cols-6 gap-2">
+          <button type="button" *ngFor="let minute of minutes" (click)="selectMinute(minute)"
+            [ngClass]="minute === selectedMinute
+              ? (isDarkMode ? 'bg-gradient-to-r from-red-600 to-orange-500 text-white shadow-md' : 'bg-gradient-to-r from-[#a9420c] via-[#c95812] to-[#dc7a39] text-white shadow-md')
+              : (isDarkMode ? 'bg-white/5 hover:bg-white/10 text-slate-200' : 'bg-[#e7e3dc] hover:bg-[#f1dccb] text-[#a9420c]')"
+            class="py-2 rounded-lg text-xs font-extrabold transition-all">{{ minute }}</button>
+        </div>
+      </div>
+
+      <button type="button" (click)="confirmTimeSelection()"
+        [ngClass]="isDarkMode ? 'from-red-600 to-orange-500' : 'from-[#a9420c] via-[#c95812] to-[#dc7a39]'"
+        class="w-full py-2.5 rounded-xl bg-gradient-to-r text-white text-xs font-extrabold uppercase tracking-widest shadow-lg hover:-translate-y-0.5 transition-all">
+        Confirm Time
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= SUCCESS CONFIRMATION BOX ================= -->
+<div
+  *ngIf="showSuccessBox"
+  [ngClass]="isDarkMode ? 'bg-black/60' : 'bg-[#25231f]/55'"
+  class="fixed inset-0 z-[9999] flex items-center justify-center backdrop-blur-sm px-4">
+
+  <div
+    [ngClass]="isDarkMode
+      ? 'bg-[#13151a] border-white/10 text-slate-200'
+      : 'bg-[#f0ece5] border-[#cec7bd] text-[#25231f]'"
+    class="w-full max-w-sm rounded-2xl border shadow-2xl p-6 text-center animate-scale-in">
+
+    <!-- DONE / TICK SYMBOL (theme based) -->
+    <div
+      [ngClass]="isDarkMode
+        ? 'bg-red-500/15 text-red-400 border-red-500/30'
+        : 'bg-[#f1dccb] text-[#c95812] border-[#c95812]/40'"
+      class="w-16 h-16 mx-auto rounded-full flex items-center justify-center border mb-4">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-9 h-9" fill="none"
+           viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+      </svg>
+    </div>
+
+    <h3 [ngClass]="isDarkMode ? 'text-white' : 'text-[#25231f]'"
+        class="text-xl font-extrabold mb-2">
+      {{ isEditMode ? 'Request Updated' : 'Request Confirmed' }}
+    </h3>
+
+    <p [ngClass]="isDarkMode ? 'text-slate-400' : 'text-[#686158]'"
+       class="text-sm font-medium leading-relaxed mb-5">
+      {{ successMessage }}
+    </p>
+
+    <button
+      type="button"
+      (click)="closeSuccessBox()"
+      [ngClass]="isDarkMode
+        ? 'from-red-600 to-orange-500 shadow-[0_0_20px_-5px_rgba(239,68,68,0.5)]'
+        : 'from-[#a9420c] via-[#c95812] to-[#dc7a39] shadow-[0_10px_25px_rgba(169,66,12,0.30)]'"
+      class="w-full px-6 py-2.5 rounded-lg bg-gradient-to-r text-white text-xs font-extrabold uppercase tracking-widest hover:-translate-y-0.5 transition-all">
+      OK, View My Requests
+    </button>
+  </div>
+</div>

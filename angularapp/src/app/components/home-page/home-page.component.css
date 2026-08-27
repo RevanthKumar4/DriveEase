@@ -1,0 +1,16 @@
+/* Remove iframe default border/outline */
+iframe {
+    border: 0 !important;
+    outline: none !important;
+    display: block;
+  }
+  
+  /* Kill any horizontal white line from parent components (like navbar bottom-border) */
+  :host {
+    display: block;
+  }
+  
+  /* Optional: smooth text for dark bg */
+  h1, h2, h3, h4, p, span {
+    -webkit-font-smoothing: antialiased;
+  }

@@ -1,0 +1,566 @@
+<div class="admin-page admin-dashboard">
+
+  <!-- ====================================================== -->
+  <!-- PAGE HEADER -->
+  <!-- ====================================================== -->
+
+  <header class="admin-page-header">
+
+    <div class="admin-page-heading-content">
+      <p class="admin-page-label">
+        DriveU Analytics
+      </p>
+
+      <h1 class="admin-page-title">
+        Dashboard <span>Overview</span>
+      </h1>
+
+      <p class="admin-page-description">
+        Monitor drivers, customer requests, platform activity and service
+        performance from one place.
+      </p>
+    </div>
+
+    <div class="dashboard-header-actions">
+
+      <!-- CURRENT DATE -->
+
+      <div class="dashboard-date-card">
+        <div class="header-card-icon">
+          <lucide-icon name="calendar-days"></lucide-icon>
+        </div>
+
+        <div>
+          <p class="dashboard-date-label">
+            Today
+          </p>
+
+          <p class="dashboard-date-value">
+            {{ currentDate }}
+          </p>
+        </div>
+      </div>
+
+      <!-- LIVE TIME -->
+
+      <div class="dashboard-live-card">
+        <span class="dashboard-live-dot"></span>
+
+        <div>
+          <p class="dashboard-date-label">
+            Live Time
+          </p>
+
+          <p class="dashboard-time-value">
+            {{ currentTime }}
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+  </header>
+
+  <!-- ====================================================== -->
+  <!-- LOADING AREA -->
+  <!-- ====================================================== -->
+
+  <div *ngIf="isLoading" class="dashboard-loading">
+    <span class="loading-spinner"></span>
+    <span>Loading dashboard data...</span>
+  </div>
+
+  <!-- ====================================================== -->
+  <!-- DASHBOARD CONTENT -->
+  <!-- ====================================================== -->
+
+  <ng-container *ngIf="!isLoading">
+
+    <!-- ==================================================== -->
+    <!-- STATISTICS CARDS -->
+    <!-- ==================================================== -->
+
+    <section class="statistics-grid">
+
+      <!-- TOTAL DRIVERS -->
+
+      <article class="admin-card statistics-card">
+
+        <div class="statistics-card-decoration"></div>
+
+        <div class="statistics-card-header">
+
+          <div class="statistics-icon statistics-icon-primary">
+            <lucide-icon name="users"></lucide-icon>
+          </div>
+
+          <span class="statistics-growth statistics-growth-positive">
+            <lucide-icon name="trending-up"></lucide-icon>
+            Active
+          </span>
+
+        </div>
+
+        <div class="statistics-content">
+          <p class="statistics-label">
+            Total Drivers
+          </p>
+
+          <h2 class="statistics-value">
+            {{ totalDrivers }}
+          </h2>
+
+          <p class="statistics-description">
+            Registered drivers on DriveU
+          </p>
+        </div>
+
+        <div class="statistics-progress">
+          <div class="statistics-progress-track">
+            <span
+              class="statistics-progress-bar statistics-progress-primary"
+              [style.width.%]="driverProgress"
+            ></span>
+          </div>
+
+          <span class="statistics-progress-text">
+            {{ driverProgress }}%
+          </span>
+        </div>
+
+      </article>
+
+      <!-- AVAILABLE DRIVERS -->
+
+      <article class="admin-card statistics-card">
+
+        <div class="statistics-card-decoration"></div>
+
+        <div class="statistics-card-header">
+
+          <div class="statistics-icon statistics-icon-success">
+            <lucide-icon name="car-front"></lucide-icon>
+          </div>
+
+          <span class="statistics-growth statistics-growth-positive">
+            <span class="mini-live-dot"></span>
+            Online
+          </span>
+
+        </div>
+
+        <div class="statistics-content">
+          <p class="statistics-label">
+            Available Drivers
+          </p>
+
+          <h2 class="statistics-value">
+            {{ availableDrivers }}
+          </h2>
+
+          <p class="statistics-description">
+            Ready to accept new bookings
+          </p>
+        </div>
+
+        <div class="statistics-progress">
+          <div class="statistics-progress-track">
+            <span
+              class="statistics-progress-bar statistics-progress-success"
+              [style.width.%]="availableProgress"
+            ></span>
+          </div>
+
+          <span class="statistics-progress-text">
+            {{ availableProgress }}%
+          </span>
+        </div>
+
+      </article>
+
+      <!-- PENDING REQUESTS -->
+
+      <article class="admin-card statistics-card">
+
+        <div class="statistics-card-decoration"></div>
+
+        <div class="statistics-card-header">
+
+          <div class="statistics-icon statistics-icon-warning">
+            <lucide-icon name="clock-3"></lucide-icon>
+          </div>
+
+          <span class="statistics-growth statistics-growth-warning">
+            Requires Action
+          </span>
+
+        </div>
+
+        <div class="statistics-content">
+          <p class="statistics-label">
+            Pending Requests
+          </p>
+
+          <h2 class="statistics-value">
+            {{ pendingRequests }}
+          </h2>
+
+          <p class="statistics-description">
+            Waiting for administrator review
+          </p>
+        </div>
+
+        <div class="statistics-progress">
+          <div class="statistics-progress-track">
+            <span
+              class="statistics-progress-bar statistics-progress-warning"
+              [style.width.%]="requestProgress"
+            ></span>
+          </div>
+
+          <span class="statistics-progress-text">
+            {{ requestProgress }}%
+          </span>
+        </div>
+
+      </article>
+
+      <!-- TOTAL FEEDBACK -->
+
+      <article class="admin-card statistics-card">
+
+        <div class="statistics-card-decoration"></div>
+
+        <div class="statistics-card-header">
+
+          <div class="statistics-icon statistics-icon-info">
+            <lucide-icon name="message-square-text"></lucide-icon>
+          </div>
+
+          <span class="statistics-growth statistics-growth-info">
+            {{ averageRating }}/5 Rating
+          </span>
+
+        </div>
+
+        <div class="statistics-content">
+          <p class="statistics-label">
+            Total Feedback
+          </p>
+
+          <h2 class="statistics-value">
+            {{ totalFeedback }}
+          </h2>
+
+          <p class="statistics-description">
+            Customer feedback received
+          </p>
+        </div>
+
+        <div class="statistics-progress">
+          <div class="statistics-progress-track">
+            <span
+              class="statistics-progress-bar statistics-progress-info"
+              [style.width.%]="feedbackProgress"
+            ></span>
+          </div>
+
+          <span class="statistics-progress-text">
+            {{ feedbackProgress }}%
+          </span>
+        </div>
+
+      </article>
+
+    </section>
+
+    <!-- ==================================================== -->
+    <!-- CHARTS -->
+    <!-- ==================================================== -->
+
+    <section class="dashboard-main-grid">
+
+      <!-- BOOKING PERFORMANCE -->
+
+      <article class="admin-card chart-card">
+
+        <div class="card-section-header">
+
+          <div>
+            <p class="card-section-label">
+              Weekly Activity
+            </p>
+
+            <h2 class="card-section-title">
+              Booking Performance
+            </h2>
+          </div>
+
+          <div class="chart-legend">
+
+            <span class="chart-legend-item">
+              <span class="chart-legend-dot primary-dot"></span>
+              Requests
+            </span>
+
+            <span class="chart-legend-item">
+              <span class="chart-legend-dot secondary-dot"></span>
+              Completed
+            </span>
+
+          </div>
+
+        </div>
+
+        <div class="chart-summary">
+
+          <div>
+            <p class="chart-summary-label">
+              Total this week
+            </p>
+
+            <p class="chart-summary-value">
+              {{ weeklyTotal }}
+            </p>
+          </div>
+
+          <span
+            class="chart-summary-growth"
+            [class.negative-growth]="weeklyGrowth < 0"
+          >
+            <lucide-icon
+              [name]="weeklyGrowth < 0 ? 'trending-down' : 'trending-up'"
+            ></lucide-icon>
+
+            {{ weeklyGrowth }}%
+          </span>      
+
+        </div>
+
+        <div class="animated-chart">
+
+          <div class="chart-horizontal-lines">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+          <div class="chart-columns">
+
+            <div
+              *ngFor="let item of weeklyActivity; let index = index"
+              class="chart-column"
+            >
+
+              <div class="chart-bars">
+
+                <div
+                  class="chart-bar chart-bar-primary"
+                  [style.height.%]="item.requests"
+                  [style.animationDelay.ms]="250 + index * 100"
+                >
+                  <span class="chart-tooltip">
+                    {{ item.requests }}%
+                  </span>
+                </div>
+
+                <div
+                  class="chart-bar chart-bar-secondary"
+                  [style.height.%]="item.completed"
+                  [style.animationDelay.ms]="320 + index * 100"
+                >
+                  <span class="chart-tooltip">
+                    {{ item.completed }}%
+                  </span>
+                </div>
+
+              </div>
+
+              <span class="chart-day">
+                {{ item.day }}
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </article>
+
+      <!-- DRIVER AVAILABILITY -->
+
+      <article class="admin-card availability-card">
+
+        <div class="card-section-header">
+
+          <div>
+            <p class="card-section-label">
+              Live Status
+            </p>
+
+            <h2 class="card-section-title">
+              Driver Availability
+            </h2>
+          </div>
+
+          <div class="availability-live">
+            <span></span>
+            Live
+          </div>
+
+        </div>
+
+        <div class="availability-circle-container">
+
+          <div class="availability-circle">
+
+            <svg
+              viewBox="0 0 160 160"
+              class="availability-svg"
+            >
+              <circle
+                class="availability-circle-track"
+                cx="80"
+                cy="80"
+                r="66"
+              ></circle>
+
+              <circle
+                class="availability-circle-progress"
+                cx="80"
+                cy="80"
+                r="66"
+                [style.strokeDashoffset]="availabilityStrokeOffset"
+              ></circle>
+            </svg>
+
+            <div class="availability-circle-content">
+              <span class="availability-percentage">
+                {{ availableProgress }}%
+              </span>
+
+              <span class="availability-circle-label">
+                Available
+              </span>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="availability-list">
+
+          <div class="availability-item">
+            <div class="availability-item-left">
+              <span class="availability-color availability-green"></span>
+              <span>Available</span>
+            </div>
+
+            <strong>{{ availableDrivers }}</strong>
+          </div>
+
+          <div class="availability-item">
+            <div class="availability-item-left">
+              <span class="availability-color availability-yellow"></span>
+              <span>Busy</span>
+            </div>
+
+            <strong>{{ busyDrivers }}</strong>
+          </div>
+
+          <div class="availability-item">
+            <div class="availability-item-left">
+              <span class="availability-color availability-red"></span>
+              <span>Offline</span>
+            </div>
+
+            <strong>{{ offlineDrivers }}</strong>
+          </div>
+
+        </div>
+
+      </article>
+
+    </section>
+
+    <!-- ==================================================== -->
+    <!-- PERFORMANCE -->
+    <!-- ==================================================== -->
+
+    <section class="dashboard-secondary-grid">
+
+      <!-- SERVICE PERFORMANCE -->
+
+      <article class="admin-card performance-card">
+
+        <div class="card-section-header">
+
+          <div>
+            <p class="card-section-label">
+              Platform Health
+            </p>
+
+            <h2 class="card-section-title">
+              Service Performance
+            </h2>
+          </div>
+
+          <lucide-icon
+            name="activity"
+            class="section-header-icon"
+          ></lucide-icon>
+
+        </div>
+
+        <div class="performance-list">
+
+          <div
+            *ngFor="let service of servicePerformance; let index = index"
+            class="performance-item"
+          >
+
+            <div class="performance-information">
+
+              <div>
+                <p class="performance-name">
+                  {{ service.name }}
+                </p>
+
+                <p class="performance-subtitle">
+                  {{ service.description }}
+                </p>
+              </div>
+
+              <span class="performance-value">
+                {{ service.value }}%
+              </span>
+
+            </div>
+
+            <div class="performance-track">
+
+              <div
+                class="performance-bar"
+                [ngClass]="service.colorClass"
+                [style.width.%]="service.value"
+                [style.animationDelay.ms]="550 + index * 160"
+              >
+                <span class="moving-light"></span>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </article>
+
+    </section>
+
+  </ng-container>
+
+</div>

@@ -1,0 +1,214 @@
+<div
+  [ngClass]="
+    isDarkMode
+      ? 'bg-black text-white'
+      : 'bg-gradient-to-br from-[#d6d0c7] via-[#e7e3dc] to-[#d6d0c7] text-[#25231f]'
+  "
+  class="relative min-h-screen overflow-x-hidden transition-colors duration-500"
+>
+
+  <div
+    *ngIf="!isDarkMode && !isAdmin"
+    class="pointer-events-none absolute inset-0"
+  >
+    <div
+      class="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-[#c95812]/[0.07] blur-3xl"
+    ></div>
+
+    <div
+      class="absolute -bottom-40 -right-32 h-[28rem] w-[28rem] rounded-full bg-[#a9420c]/[0.06] blur-3xl"
+    ></div>
+
+    <div
+      class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(240,236,229,0.30),transparent_70%)]"
+    ></div>
+  </div>
+
+  <ng-container *ngIf="showNavbar && isAdmin">
+
+    <app-adminnav></app-adminnav>
+
+    <main class="admin-main-content">
+
+      <div class="admin-background-effects">
+        <div class="admin-background-grid"></div>
+        <div class="admin-glow admin-glow-top"></div>
+        <div class="admin-glow admin-glow-bottom"></div>
+      </div>
+
+      <header class="admin-top-header">
+
+        <div class="admin-header-title">
+          <p class="admin-header-label">
+            DriveU Command Centre
+          </p>
+
+          <h2 class="admin-header-heading">
+            Admin Workspace
+          </h2>
+        </div>
+
+        <div class="admin-header-actions">
+
+          <div class="admin-live-status">
+            <span class="admin-live-dot"></span>
+            <span>System connected</span>
+          </div>
+
+          <div class="admin-header-profile">
+
+            <span class="admin-header-avatar">
+              A
+            </span>
+
+            <div class="admin-header-profile-text">
+              <span class="admin-header-profile-name">
+                Administrator
+              </span>
+
+              <span class="admin-header-profile-role">
+                DriveU Admin
+              </span>
+            </div>
+
+          </div>
+
+        </div>
+
+      </header>
+
+      <section class="admin-router-content">
+        <router-outlet></router-outlet>
+      </section>
+
+    </main>
+
+  </ng-container>
+
+  <ng-container
+    *ngIf="showNavbar && isCustomer && isCustomerCubeRoute"
+  >
+
+    <app-customernav></app-customernav>
+
+    <div
+      class="customer-cube-page relative z-10 bg-transparent px-3 pb-4 pt-28 transition-colors duration-500 sm:px-4 md:px-6 md:pb-6"
+    >
+
+      <div class="cube-scene">
+
+        <div
+          class="cube"
+          [style.transform]="
+            'translateZ(-45vw) rotateY(' + currentRotation + 'deg)'
+          "
+        >
+
+          <section
+            [ngClass]="
+              isDarkMode
+                ? 'bg-black text-white'
+                : 'bg-[#e7e3dc] text-[#25231f]'
+            "
+            class="cube-face cube-face-front transition-colors duration-500"
+            [class.active-face]="activeView === 'home'"
+          >
+            <app-home-page></app-home-page>
+          </section>
+
+          <section
+            [ngClass]="
+              isDarkMode
+                ? 'bg-black text-white'
+                : 'bg-[#e7e3dc] text-[#25231f]'
+            "
+            class="cube-face cube-face-right transition-colors duration-500"
+            [class.active-face]="activeView === 'drivers'"
+          >
+            <app-customerviewdriver></app-customerviewdriver>
+          </section>
+
+          <section
+            [ngClass]="
+              isDarkMode
+                ? 'bg-black text-white'
+                : 'bg-[#e7e3dc] text-[#25231f]'
+            "
+            class="cube-face cube-face-back transition-colors duration-500"
+            [class.active-face]="activeView === 'requests'"
+          >
+            <app-customerviewrequested></app-customerviewrequested>
+          </section>
+
+          <section
+            [ngClass]="
+              isDarkMode
+                ? 'bg-black text-white'
+                : 'bg-[#e7e3dc] text-[#25231f]'
+            "
+            class="cube-face cube-face-left transition-colors duration-500"
+            [class.active-face]="activeView === 'feedback'"
+          >
+            <app-customerviewfeedback></app-customerviewfeedback>
+          </section>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </ng-container>
+
+  <ng-container
+    *ngIf="showNavbar && isCustomer && !isCustomerCubeRoute"
+  >
+
+    <app-customernav></app-customernav>
+
+    <div
+      class="relative z-10 px-3 pb-4 pt-28 sm:px-4 md:px-6 md:pb-6"
+    >
+
+      <div
+        [ngClass]="
+          isDarkMode
+            ? 'border-zinc-800 bg-black'
+            : 'border-[#cec7bd] bg-[#f0ece5]/90 shadow-[0_18px_45px_rgba(37,35,31,0.12)]'
+        "
+        class="relative overflow-hidden rounded-3xl border backdrop-blur-xl transition-all duration-500"
+      >
+
+        <div
+          *ngIf="!isDarkMode"
+          class="pointer-events-none absolute inset-x-0 top-0 z-20 h-[2px] bg-gradient-to-r from-transparent via-[#c95812]/60 to-transparent"
+        ></div>
+
+        <router-outlet></router-outlet>
+
+      </div>
+
+    </div>
+
+  </ng-container>
+
+  <ng-container *ngIf="!showNavbar">
+
+    <div
+      [ngClass]="
+        isDarkMode
+          ? 'bg-black text-white'
+          : 'bg-gradient-to-br from-[#d6d0c7] via-[#e7e3dc] to-[#d6d0c7] text-[#25231f]'
+      "
+      class="relative z-10 min-h-screen transition-colors duration-500"
+    >
+      <router-outlet></router-outlet>
+    </div>
+
+  </ng-container>
+
+  <ng-template [ngIf]="showNavbar && isCustomer">
+    <app-chatbot></app-chatbot>
+  </ng-template>
+
+</div>

@@ -1,0 +1,492 @@
+:host {
+  display: block;
+  width: 100%;
+  min-height: 100%;
+  overflow: visible !important;
+  perspective: none !important;
+}
+
+/* Cube face flip */
+.cube-enter {
+  transform-origin: center top;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  animation: cubeFlipTopToBottom 900ms cubic-bezier(0.25, 1, 0.3, 1);
+}
+
+@keyframes cubeFlipTopToBottom {
+  0% {
+    transform: perspective(1800px) rotateX(-90deg) translateZ(160px);
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: perspective(1800px) rotateX(0deg) translateZ(0);
+    opacity: 1;
+  }
+}
+
+/* Main outer div */
+.customer-request-page {
+  margin-top: 18px !important;
+  height: calc(100vh - 135px);
+  height: calc(100dvh - 135px);
+  max-height: calc(100vh - 135px);
+  max-height: calc(100dvh - 135px);
+  overflow: hidden !important;
+}
+
+/* Header inside outer div */
+.customer-request-header {
+  flex-shrink: 0;
+}
+
+/* Wrapper should not scroll */
+.customer-request-form-wrapper {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden !important;
+}
+
+/* Form card stays fixed */
+.customer-request-card {
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden !important;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Only form area scrolls */
+.customer-request-scroll-area {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding-right: 8px;
+  padding-bottom: 12px;
+}
+
+/* Native date/time picker click-anywhere fix */
+.full-click-input {
+  position: relative;
+}
+
+.full-click-input::-webkit-calendar-picker-indicator {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Map dropdown wrapper */
+.map-dropdown {
+  position: relative;
+  z-index: 999;
+  width: 100%;
+}
+
+/* Actual map area */
+.location-map {
+  width: 100%;
+  height: 300px !important;
+  min-height: 300px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #eef2f7;
+  display: block;
+}
+
+/* Leaflet map fix */
+.leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 300px !important;
+  border-radius: 14px;
+  z-index: 1;
+}
+
+/* Leaflet controls */
+.leaflet-control-container {
+  z-index: 20;
+}
+
+/* Location suggestion dropdown */
+.location-suggestion-box {
+  max-height: 170px;
+  overflow-y: auto;
+  border-radius: 10px;
+  z-index: 1000;
+  position: relative;
+}
+
+/* =========================================================
+   ALL POPUPS SCREEN-FIT FIX
+   ========================================================= */
+
+/*
+  Makes all popup overlays use the real browser viewport.
+  High z-index prevents the navbar from overlapping the popup.
+*/
+.fixed.inset-0.z-\[9999\] {
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+
+  z-index: 2147483647 !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+
+  box-sizing: border-box !important;
+  padding: 16px !important;
+  margin: 0 !important;
+
+  overscroll-behavior: contain;
+}
+
+/* Every popup panel stays completely inside the screen */
+.fixed.inset-0.z-\[9999\] > div {
+  position: relative !important;
+  width: 100% !important;
+  max-height: calc(100vh - 32px) !important;
+  max-height: calc(100dvh - 32px) !important;
+
+  margin: auto !important;
+  box-sizing: border-box !important;
+
+  display: flex;
+  flex-direction: column;
+  overflow: hidden !important;
+}
+
+/* Date and time popup width */
+.fixed.inset-0.z-\[9999\] > div.max-w-md {
+  max-width: 28rem !important;
+}
+
+/* Success popup width */
+.fixed.inset-0.z-\[9999\] > div.max-w-sm {
+  max-width: 24rem !important;
+  overflow-y: auto !important;
+}
+
+/* Map popup width */
+.fixed.inset-0.z-\[9999\] > div.max-w-4xl {
+  max-width: 56rem !important;
+}
+
+/* Popup headers always remain visible */
+.fixed.inset-0.z-\[9999\] > div > div:first-child {
+  flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
+  position: relative;
+  z-index: 10;
+}
+
+/* Date/time/map popup content scrolls internally */
+.fixed.inset-0.z-\[9999\] > div > div:last-child {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+}
+
+/* Map popup body */
+.fixed.inset-0.z-\[9999\] > div.max-w-4xl > div:last-child {
+  min-height: 0 !important;
+  overflow-y: auto !important;
+}
+
+/* Map height adjusts according to available screen */
+.fixed.inset-0.z-\[9999\] .popup-location-map {
+  height: min(300px, 40vh) !important;
+  min-height: min(300px, 40vh) !important;
+  flex-shrink: 0;
+}
+
+/* Popup content scrollbar */
+.fixed.inset-0.z-\[9999\] > div > div:last-child::-webkit-scrollbar {
+  width: 6px;
+}
+
+.fixed.inset-0.z-\[9999\] > div > div:last-child::-webkit-scrollbar-track {
+  background: rgba(100, 116, 139, 0.12);
+  border-radius: 10px;
+}
+
+.fixed.inset-0.z-\[9999\] > div > div:last-child::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ef4444, #f97316);
+  border-radius: 10px;
+}
+
+.fixed.inset-0.z-\[9999\] > div > div:last-child::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #dc2626, #ea580c);
+}
+
+/* Scrollbar for inner form */
+.customer-request-scroll-area::-webkit-scrollbar {
+  width: 7px;
+}
+
+.customer-request-scroll-area::-webkit-scrollbar-track {
+  background: #fff1f7;
+  border-radius: 10px;
+}
+
+.customer-request-scroll-area::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ec4899, #fb923c);
+  border-radius: 10px;
+}
+
+.customer-request-scroll-area::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #db2777, #f97316);
+}
+
+/* Scrollbar for suggestions */
+.location-suggestion-box::-webkit-scrollbar {
+  width: 6px;
+}
+
+.location-suggestion-box::-webkit-scrollbar-track {
+  background: #fff1f7;
+  border-radius: 10px;
+}
+
+.location-suggestion-box::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ec4899, #fb923c);
+  border-radius: 10px;
+}
+
+/* Success popup animation */
+.animate-scale-in {
+  animation: scaleIn 0.25s ease-out;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* =========================================================
+   SHORT LAPTOP SCREEN
+   ========================================================= */
+
+@media (max-height: 850px) {
+  .fixed.inset-0.z-\[9999\] {
+    align-items: flex-start !important;
+    padding: 10px !important;
+  }
+
+  .fixed.inset-0.z-\[9999\] > div {
+    max-height: calc(100vh - 20px) !important;
+    max-height: calc(100dvh - 20px) !important;
+    margin: 0 auto !important;
+  }
+
+  .fixed.inset-0.z-\[9999\] > div.max-w-md > div:last-child {
+    padding: 12px !important;
+  }
+
+  .fixed.inset-0.z-\[9999\] > div.max-w-md > div:last-child.space-y-4 {
+    gap: 10px !important;
+  }
+
+  .fixed.inset-0.z-\[9999\] .popup-location-map {
+    height: min(260px, 35vh) !important;
+    min-height: min(260px, 35vh) !important;
+  }
+}
+
+/* =========================================================
+   VERY SHORT LAPTOP SCREEN
+   ========================================================= */
+
+@media (max-height: 700px) {
+  .fixed.inset-0.z-\[9999\] {
+    padding: 6px !important;
+  }
+
+  .fixed.inset-0.z-\[9999\] > div {
+    max-height: calc(100vh - 12px) !important;
+    max-height: calc(100dvh - 12px) !important;
+  }
+
+  .fixed.inset-0.z-\[9999\] > div > div:first-child {
+    padding-top: 7px !important;
+    padding-bottom: 7px !important;
+  }
+
+  .fixed.inset-0.z-\[9999\] > div.max-w-md > div:last-child {
+    padding: 8px !important;
+  }
+
+  /* Compact time preview */
+  .fixed.inset-0.z-\[9999\]
+    > div.max-w-md
+    > div:last-child
+    > .flex.justify-center.items-center {
+    gap: 6px !important;
+  }
+
+  .fixed.inset-0.z-\[9999\]
+    > div.max-w-md
+    > div:last-child
+    > .flex.justify-center.items-center
+    > div {
+    padding: 7px 12px !important;
+    font-size: 20px !important;
+    line-height: 1.2 !important;
+  }
+
+  .fixed.inset-0.z-\[9999\]
+    > div.max-w-md
+    > div:last-child
+    > .flex.justify-center.items-center
+    > span {
+    font-size: 20px !important;
+  }
+
+  /* Compact date buttons */
+  .fixed.inset-0.z-\[9999\] > div.max-w-md .grid.grid-cols-7 {
+    gap: 5px !important;
+  }
+
+  .fixed.inset-0.z-\[9999\] > div.max-w-md .grid.grid-cols-7 button {
+    height: 34px !important;
+  }
+
+  /* Compact hour/minute buttons */
+  .fixed.inset-0.z-\[9999\] > div.max-w-md .grid.grid-cols-6 {
+    gap: 5px !important;
+  }
+
+  .fixed.inset-0.z-\[9999\] > div.max-w-md .grid.grid-cols-6 button {
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+  }
+
+  .fixed.inset-0.z-\[9999\] > div.max-w-md .grid.grid-cols-2 button {
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
+  .fixed.inset-0.z-\[9999\] .popup-location-map {
+    height: 230px !important;
+    min-height: 230px !important;
+  }
+}
+
+/* =========================================================
+   TABLET AND MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+  .customer-request-page {
+    height: calc(100vh - 115px);
+    height: calc(100dvh - 115px);
+    max-height: calc(100vh - 115px);
+    max-height: calc(100dvh - 115px);
+    margin-top: 12px !important;
+  }
+
+  .location-map {
+    height: 240px !important;
+    min-height: 240px;
+  }
+
+  .leaflet-container {
+    min-height: 240px !important;
+  }
+
+  .fixed.inset-0.z-\[9999\] {
+    align-items: flex-start !important;
+    padding: 8px !important;
+  }
+
+  .fixed.inset-0.z-\[9999\] > div {
+    max-height: calc(100vh - 16px) !important;
+    max-height: calc(100dvh - 16px) !important;
+    margin: 0 auto !important;
+  }
+
+  .fixed.inset-0.z-\[9999\] .popup-location-map {
+    height: 230px !important;
+    min-height: 230px !important;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+  .fixed.inset-0.z-\[9999\] {
+    padding: 5px !important;
+  }
+
+  .fixed.inset-0.z-\[9999\] > div {
+    max-height: calc(100vh - 10px) !important;
+    max-height: calc(100dvh - 10px) !important;
+    border-radius: 14px !important;
+  }
+
+  .fixed.inset-0.z-\[9999\] > div > div:first-child {
+    padding: 8px 10px !important;
+  }
+
+  .fixed.inset-0.z-\[9999\] > div.max-w-md > div:last-child {
+    padding: 8px !important;
+  }
+
+  .fixed.inset-0.z-\[9999\] > div.max-w-md .grid.grid-cols-7 {
+    gap: 3px !important;
+  }
+
+  .fixed.inset-0.z-\[9999\] > div.max-w-md .grid.grid-cols-7 button {
+    height: 32px !important;
+  }
+
+  .fixed.inset-0.z-\[9999\] > div.max-w-md .grid.grid-cols-6 {
+    gap: 4px !important;
+  }
+
+  .fixed.inset-0.z-\[9999\] > div.max-w-md .grid.grid-cols-6 button {
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+    font-size: 10px !important;
+  }
+
+  .fixed.inset-0.z-\[9999\] .popup-location-map {
+    height: 210px !important;
+    min-height: 210px !important;
+  }
+}

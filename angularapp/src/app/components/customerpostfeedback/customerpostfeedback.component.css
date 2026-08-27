@@ -1,0 +1,104 @@
+:host {
+  display: block;
+  overflow: hidden;
+}
+
+/* Outer page fixed below navbar - page itself won't scroll */
+.feedback-page {
+  margin-top: 18px;
+  height: calc(100vh - 135px);
+  max-height: calc(100vh - 135px);
+  overflow: hidden !important;
+}
+
+/* Header stays fixed */
+.feedback-header {
+  flex-shrink: 0;
+}
+
+/* Wrapper does not scroll */
+.feedback-form-wrapper {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden !important;
+}
+
+/* Card stays in place */
+.feedback-card {
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden !important;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Only the form area scrolls */
+.feedback-scroll-area {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding-right: 8px;
+  padding-bottom: 8px;
+}
+
+/* Scrollbar */
+.feedback-scroll-area::-webkit-scrollbar {
+  width: 7px;
+}
+
+.feedback-scroll-area::-webkit-scrollbar-track {
+  background: #fff1f7;
+  border-radius: 10px;
+}
+
+.feedback-scroll-area::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ec4899, #fb923c);
+  border-radius: 10px;
+}
+
+/* Interactive select dropdown */
+.custom-select {
+  background-image: none;
+}
+
+.custom-select option {
+  background-color: #13151a;
+  color: #e2e8f0;
+  font-weight: 600;
+  padding: 10px;
+}
+
+:host-context(.light) .custom-select option {
+  background-color: #ffffff;
+  color: #1f2937;
+}
+
+.custom-select:focus {
+  box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.15);
+}
+
+/* Success popup animation */
+.animate-scale-in {
+  animation: scaleIn 0.25s ease-out;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .feedback-page {
+    height: calc(100vh - 90px);
+    max-height: calc(100vh - 90px);
+    margin-top: 8px;
+  }
+}

@@ -1,0 +1,649 @@
+<div class="admin-page feedback-page">
+
+  <header class="feedback-page-header">
+
+    <div class="feedback-header-content">
+      <p class="feedback-header-label">
+        DriveU Analytics
+      </p>
+
+      <h1 class="feedback-header-title">
+        Customer <span>Feedback</span>
+      </h1>
+
+      <p class="feedback-header-description">
+        Manage and analyze customer experiences and driver performance across the platform.
+      </p>
+    </div>
+
+    <div class="feedback-header-badge">
+      <span class="feedback-badge-dot"></span>
+
+      <div>
+        <p class="feedback-badge-label">
+          Total Reviews
+        </p>
+
+        <p class="feedback-badge-value">
+          {{ filteredFeedbacks.length }} Entries
+        </p>
+      </div>
+    </div>
+
+    <div class="feedback-header-decoration"></div>
+
+  </header>
+
+  <section class="feedback-filter-card">
+
+    <div class="feedback-filter-header">
+
+      <div>
+        <p class="feedback-filter-label">
+          Feedback Directory
+        </p>
+
+        <h2 class="feedback-filter-title">
+          Filter by Category
+        </h2>
+      </div>
+
+      <span class="feedback-count-badge">
+        <span class="feedback-count-dot"></span>
+        {{ filteredFeedbacks.length }} Records
+      </span>
+
+    </div>
+
+    <div class="feedback-select-wrapper">
+
+      <select
+        name="feedbackCategory"
+        [(ngModel)]="selectedCategory"
+        (change)="filterFeedbacks()"
+        class="feedback-select"
+        aria-label="Filter feedback by category"
+      >
+        <option value="">
+          All Categories
+        </option>
+
+        <option value="Driver Performance">
+          Driver Performance
+        </option>
+
+        <option value="Service Experience">
+          Service Experience
+        </option>
+      </select>
+
+      <span
+        class="feedback-select-arrow"
+        aria-hidden="true"
+      >
+        <lucide-icon
+          name="chevron-down"
+          [size]="18"
+        ></lucide-icon>
+      </span>
+
+    </div>
+
+  </section>
+
+  <ng-template
+    [ngIf]="filteredFeedbacks.length === 0"
+  >
+    <section class="feedback-empty-state">
+
+      <div
+        class="feedback-empty-icon"
+        aria-hidden="true"
+      >
+        <lucide-icon
+          name="message-square"
+          [size]="34"
+        ></lucide-icon>
+      </div>
+
+      <p class="feedback-empty-label">
+        No Results
+      </p>
+
+      <h2 class="feedback-empty-title">
+        No Feedback Found
+      </h2>
+
+      <p class="feedback-empty-description">
+        No feedback entries match the selected category filter.
+      </p>
+
+    </section>
+  </ng-template>
+
+  <ng-template
+    [ngIf]="filteredFeedbacks.length > 0"
+  >
+    <div class="feedback-table-card">
+
+      <div class="feedback-table-wrapper">
+
+        <table class="feedback-table">
+
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Category</th>
+              <th>Rating</th>
+              <th>Feedback</th>
+              <th>User</th>
+              <th>Driver</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <ng-template
+              ngFor
+              let-feedback
+              [ngForOf]="paginatedFeedbacks"
+            >
+              <tr>
+
+                <td class="feedback-id">
+                  #{{ feedback.feedbackId }}
+                </td>
+
+                <td>
+                  <span class="feedback-category-badge">
+                    {{ feedback.category }}
+                  </span>
+                </td>
+
+                <td>
+                  <span class="feedback-rating">
+
+                    <lucide-icon
+                      name="star"
+                      [size]="13"
+                    ></lucide-icon>
+
+                    <span>
+                      {{ feedback.rating }}/5
+                    </span>
+
+                  </span>
+                </td>
+
+                <td class="feedback-text-cell">
+                  {{ feedback.feedbackText }}
+                </td>
+
+                <td>
+                  <button
+                    type="button"
+                    class="feedback-action-btn feedback-btn-outline"
+                    (click)="showUserProfile(feedback)"
+                  >
+                    <span class="feedback-button-icon">
+                      <lucide-icon
+                        name="user-round"
+                        [size]="15"
+                      ></lucide-icon>
+                    </span>
+
+                    <span class="feedback-button-text">
+                      Show Profile
+                    </span>
+                  </button>
+                </td>
+
+                <td>
+                  <button
+                    type="button"
+                    class="feedback-action-btn feedback-btn-primary"
+                    (click)="showDriverInfo(feedback)"
+                  >
+                    <span class="feedback-button-icon">
+                      <lucide-icon
+                        name="car-front"
+                        [size]="15"
+                      ></lucide-icon>
+                    </span>
+
+                    <span class="feedback-button-text">
+                      Driver Info
+                    </span>
+                  </button>
+                </td>
+
+              </tr>
+            </ng-template>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+      <!-- ================= PAGINATION BAR ================= -->
+      <div
+        *ngIf="totalPages > 1"
+        class="feedback-pagination"
+      >
+        <button
+          type="button"
+          class="feedback-page-btn"
+          [disabled]="currentPage === 1"
+          (click)="prevPage()"
+        >
+          <lucide-icon name="chevron-left" [size]="16"></lucide-icon>
+          <span>Prev</span>
+        </button>
+
+        <button
+          type="button"
+          *ngFor="let page of pagesArray"
+          class="feedback-page-number"
+          [class.feedback-page-active]="page === currentPage"
+          (click)="goToPage(page)"
+        >
+          {{ page }}
+        </button>
+
+        <button
+          type="button"
+          class="feedback-page-btn"
+          [disabled]="currentPage === totalPages"
+          (click)="nextPage()"
+        >
+          <span>Next</span>
+          <lucide-icon name="chevron-right" [size]="16"></lucide-icon>
+        </button>
+      </div>
+
+    </div>
+  </ng-template>
+
+</div>
+
+<ng-template [ngIf]="showUserModal">
+
+  <div
+    class="feedback-modal-backdrop"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="userModalTitle"
+    (click)="closeUserModal()"
+  >
+
+    <div
+      class="feedback-modal"
+      (click)="$event.stopPropagation()"
+    >
+
+      <div class="feedback-modal-decoration"></div>
+
+      <div class="feedback-modal-header">
+
+        <div class="feedback-modal-title-group">
+
+          <p class="feedback-modal-label">
+            Customer Details
+          </p>
+
+          <h2
+            id="userModalTitle"
+            class="feedback-modal-title"
+          >
+            User <span>Profile</span>
+          </h2>
+
+        </div>
+
+        <button
+          type="button"
+          class="feedback-modal-close"
+          (click)="closeUserModal()"
+          aria-label="Close user profile"
+        >
+          <lucide-icon
+            name="circle-x"
+            [size]="20"
+          ></lucide-icon>
+        </button>
+
+      </div>
+
+      <div class="feedback-modal-info-list">
+
+        <div class="feedback-modal-info-item">
+
+          <div class="feedback-modal-info-heading">
+
+            <span class="feedback-modal-field-icon">
+              <lucide-icon
+                name="user-round"
+                [size]="16"
+              ></lucide-icon>
+            </span>
+
+            <span class="feedback-modal-info-key">
+              Username
+            </span>
+
+          </div>
+
+          <span class="feedback-modal-info-value">
+            {{ selectedUser?.username || 'N/A' }}
+          </span>
+
+        </div>
+
+        <div class="feedback-modal-info-item">
+
+          <div class="feedback-modal-info-heading">
+
+            <span class="feedback-modal-field-icon">
+              <lucide-icon
+                name="mail"
+                [size]="16"
+              ></lucide-icon>
+            </span>
+
+            <span class="feedback-modal-info-key">
+              Email
+            </span>
+
+          </div>
+
+          <span class="feedback-modal-info-value">
+            {{ selectedUser?.email || 'N/A' }}
+          </span>
+
+        </div>
+
+        <div class="feedback-modal-info-item">
+
+          <div class="feedback-modal-info-heading">
+
+            <span class="feedback-modal-field-icon">
+              <lucide-icon
+                name="phone"
+                [size]="16"
+              ></lucide-icon>
+            </span>
+
+            <span class="feedback-modal-info-key">
+              Mobile
+            </span>
+
+          </div>
+
+          <span class="feedback-modal-info-value">
+            {{ selectedUser?.mobileNumber || 'N/A' }}
+          </span>
+
+        </div>
+
+      </div>
+
+      <button
+        type="button"
+        class="feedback-modal-close-btn"
+        (click)="closeUserModal()"
+      >
+        <lucide-icon
+          name="circle-check"
+          [size]="16"
+        ></lucide-icon>
+
+        <span>Close</span>
+      </button>
+
+    </div>
+
+  </div>
+
+</ng-template>
+
+<ng-template [ngIf]="showDriverModal">
+
+  <div
+    class="feedback-modal-backdrop"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="driverModalTitle"
+    (click)="closeDriverModal()"
+  >
+
+    <div
+      class="feedback-modal feedback-modal-wide"
+      (click)="$event.stopPropagation()"
+    >
+
+      <div class="feedback-modal-decoration"></div>
+
+      <div class="feedback-modal-header">
+
+        <div class="feedback-modal-title-group">
+
+          <p class="feedback-modal-label">
+            Driver Information
+          </p>
+
+          <h2
+            id="driverModalTitle"
+            class="feedback-modal-title"
+          >
+            Driver <span>Details</span>
+          </h2>
+
+        </div>
+
+        <button
+          type="button"
+          class="feedback-modal-close"
+          (click)="closeDriverModal()"
+          aria-label="Close driver details"
+        >
+          <lucide-icon
+            name="circle-x"
+            [size]="20"
+          ></lucide-icon>
+        </button>
+
+      </div>
+
+      <div class="feedback-modal-driver-image">
+
+        <ng-template
+          [ngIf]="selectedDriver?.image && !driverImageFailed"
+        >
+          <img
+            [src]="selectedDriver.image"
+            [alt]="selectedDriver.driverName || 'Driver image'"
+            (error)="handleDriverImageError()"
+          />
+        </ng-template>
+
+        <ng-template
+          [ngIf]="!selectedDriver?.image || driverImageFailed"
+        >
+          <div
+            class="feedback-driver-image-fallback"
+            aria-label="Driver image unavailable"
+          >
+            <lucide-icon
+              name="image"
+              [size]="42"
+            ></lucide-icon>
+
+            <span>
+              Image unavailable
+            </span>
+          </div>
+        </ng-template>
+
+      </div>
+
+      <div class="feedback-modal-info-grid">
+
+        <div class="feedback-modal-info-item">
+
+          <div class="feedback-modal-info-heading">
+
+            <span class="feedback-modal-field-icon">
+              <lucide-icon
+                name="user-round"
+                [size]="16"
+              ></lucide-icon>
+            </span>
+
+            <span class="feedback-modal-info-key">
+              Name
+            </span>
+
+          </div>
+
+          <span class="feedback-modal-info-value">
+            {{ selectedDriver?.driverName || 'N/A' }}
+          </span>
+
+        </div>
+
+        <div class="feedback-modal-info-item">
+
+          <div class="feedback-modal-info-heading">
+
+            <span class="feedback-modal-field-icon">
+              <lucide-icon
+                name="shield-check"
+                [size]="16"
+              ></lucide-icon>
+            </span>
+
+            <span class="feedback-modal-info-key">
+              License
+            </span>
+
+          </div>
+
+          <span class="feedback-modal-info-value">
+            {{ selectedDriver?.licenseNumber || 'N/A' }}
+          </span>
+
+        </div>
+
+        <div class="feedback-modal-info-item">
+
+          <div class="feedback-modal-info-heading">
+
+            <span class="feedback-modal-field-icon">
+              <lucide-icon
+                name="phone"
+                [size]="16"
+              ></lucide-icon>
+            </span>
+
+            <span class="feedback-modal-info-key">
+              Contact
+            </span>
+
+          </div>
+
+          <span class="feedback-modal-info-value">
+            {{ selectedDriver?.contactNumber || 'N/A' }}
+          </span>
+
+        </div>
+
+        <div class="feedback-modal-info-item">
+
+          <div class="feedback-modal-info-heading">
+
+            <span class="feedback-modal-field-icon">
+              <lucide-icon
+                name="briefcase-business"
+                [size]="16"
+              ></lucide-icon>
+            </span>
+
+            <span class="feedback-modal-info-key">
+              Experience
+            </span>
+
+          </div>
+
+          <span class="feedback-modal-info-value">
+            {{ selectedDriver?.experienceYears || 0 }} Years
+          </span>
+
+        </div>
+
+        <div class="feedback-modal-info-item">
+
+          <div class="feedback-modal-info-heading">
+
+            <span class="feedback-modal-field-icon">
+              <lucide-icon
+                name="car-front"
+                [size]="16"
+              ></lucide-icon>
+            </span>
+
+            <span class="feedback-modal-info-key">
+              Vehicle
+            </span>
+
+          </div>
+
+          <span class="feedback-modal-info-value">
+            {{ selectedDriver?.vehicleType || 'N/A' }}
+          </span>
+
+        </div>
+
+        <div class="feedback-modal-info-item">
+
+          <div class="feedback-modal-info-heading">
+
+            <span class="feedback-modal-field-icon">
+              <lucide-icon
+                name="circle-dot"
+                [size]="16"
+              ></lucide-icon>
+            </span>
+
+            <span class="feedback-modal-info-key">
+              Status
+            </span>
+
+          </div>
+
+          <span class="feedback-modal-info-value">
+            {{ selectedDriver?.availabilityStatus || 'N/A' }}
+          </span>
+
+        </div>
+
+      </div>
+
+      <button
+        type="button"
+        class="feedback-modal-close-btn"
+        (click)="closeDriverModal()"
+      >
+        <lucide-icon
+          name="circle-check"
+          [size]="16"
+        ></lucide-icon>
+
+        <span>Close</span>
+      </button>
+
+    </div>
+
+  </div>
+
+</ng-template>

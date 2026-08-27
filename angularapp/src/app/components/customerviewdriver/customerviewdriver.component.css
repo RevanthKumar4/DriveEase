@@ -1,0 +1,95 @@
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(201, 88, 18, 0.45);
+  border-radius: 999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(201, 88, 18, 0.75);
+}
+
+/* ================= SVG LOADER ================= */
+
+.drivers-loader-box {
+  min-height: 360px;
+  width: 100%;
+}
+
+.driveu-loader {
+  display: block;
+  width: 9.375rem;
+  height: 9.375rem;
+  margin: 0 auto;
+  overflow: visible;
+  filter:
+    drop-shadow(0 16px 35px rgba(239, 68, 68, 0.18))
+    drop-shadow(0 10px 24px rgba(251, 146, 60, 0.14));
+}
+
+@media (max-width: 768px) {
+  .drivers-loader-box {
+    min-height: 300px;
+  }
+
+  .driveu-loader {
+    width: 7.5rem;
+    height: 7.5rem;
+  }
+}
+/* ================= TOP FADE ON SCROLL ================= */
+/* Sticky gradient that sits at the top of the scroll area.
+   Cards dissolve into it as they scroll up toward the navbar. */
+   .custom-scrollbar::before {
+    content: "";
+    position: sticky;
+    top: 0;
+    left: 0;
+    display: block;
+    height: 34px;
+    margin-bottom: -34px;   /* pulls content back up so no gap is created */
+    z-index: 20;
+    pointer-events: none;
+  }
+  
+  /* DARK theme fade (component bg = #050505) */
+  .bg-\[\#050505\] .custom-scrollbar::before {
+    background: linear-gradient(
+      to bottom,
+      #050505 0%,
+      rgba(5, 5, 5, 0.85) 40%,
+      rgba(5, 5, 5, 0) 100%
+    );
+  }
+  
+  /* LIGHT theme fade (component bg = #e7e3dc) */
+  .bg-\[\#e7e3dc\] .custom-scrollbar::before {
+    background: linear-gradient(
+      to bottom,
+      #e7e3dc 0%,
+      rgba(231, 227, 220, 0.85) 40%,
+      rgba(231, 227, 220, 0) 100%
+    );
+  }
+  /* ================= CUSTOM ALERT ANIMATION ================= */
+
+@keyframes scale-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-scale-in {
+  animation: scale-in 0.25s ease-out forwards;
+}

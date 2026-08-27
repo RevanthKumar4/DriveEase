@@ -1,0 +1,895 @@
+/* =========================================================
+   CUSTOMER CUBE ROUTING
+   ========================================================= */
+
+   .customer-cube-page {
+    height: 100vh;
+    overflow: visible;
+  }
+  
+  .cube-scene {
+    position: relative;
+  
+    width: 100%;
+    height: calc(100vh - 8rem);
+  
+    overflow: visible;
+    perspective: 2200px;
+  }
+  
+  .cube {
+    position: relative;
+  
+    width: 100%;
+    height: 100%;
+  
+    overflow: visible;
+  
+    transform-style: preserve-3d;
+  
+    transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  
+  .cube-face {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  
+    width: 100%;
+    height: 100%;
+  
+    overflow-x: hidden;
+    overflow-y: auto;
+  
+    pointer-events: none;
+  
+    background: #020617;
+    border: 1px solid rgba(63, 63, 70, 0.9);
+    border-radius: 1.5rem;
+  
+    opacity: 0.25;
+    filter: blur(1px);
+    backface-visibility: hidden;
+  
+    transition:
+      opacity 350ms ease,
+      filter 350ms ease;
+  }
+  
+  .cube-face.active-face {
+    z-index: 100;
+  
+    overflow: visible;
+  
+    pointer-events: auto;
+  
+    opacity: 1;
+    filter: none;
+  }
+  
+  /* 4 CUBE FACES */
+  
+  .cube-face-front {
+    transform: rotateY(0deg) translateZ(45vw);
+  }
+  
+  .cube-face-right {
+    transform: rotateY(90deg) translateZ(45vw);
+  }
+  
+  .cube-face-back {
+    transform: rotateY(180deg) translateZ(45vw);
+  }
+  
+  .cube-face-left {
+    transform: rotateY(-90deg) translateZ(45vw);
+  }
+  
+  /* MODAL FIX WHILE DRIVER MODAL IS OPEN */
+  
+  :host-context(.driver-modal-open) .customer-cube-page,
+  :host-context(.driver-modal-open) .cube-scene,
+  :host-context(.driver-modal-open) .cube,
+  :host-context(.driver-modal-open) .cube-face,
+  :host-context(.driver-modal-open) .cube-face.active-face {
+    overflow: visible !important;
+  }
+  
+  :host-context(.driver-modal-open) .cube-face.active-face {
+    z-index: 9999 !important;
+  }
+  
+  /* CUBE SCROLLBAR */
+  
+  .cube-face::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .cube-face::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .cube-face::-webkit-scrollbar-thumb {
+    background: rgba(239, 68, 68, 0.5);
+    border-radius: 999px;
+  }
+  
+  /* =========================================================
+     ADMIN NORMAL LAYOUT
+     Admin does not use cube rotation or a rounded outer box.
+     ========================================================= */
+  
+  .admin-main-content {
+    position: relative;
+  
+    width: calc(100% - 270px);
+    min-height: 100vh;
+    margin-left: 270px;
+  
+    overflow-x: hidden;
+  
+    color: var(--admin-text-primary, #edfdfb);
+  
+    background:
+      radial-gradient(
+        circle at 88% 8%,
+        rgba(53, 212, 196, 0.08),
+        transparent 28%
+      ),
+      linear-gradient(
+        135deg,
+        var(--admin-page-bg, #061017) 0%,
+        var(--admin-page-bg-secondary, #081820) 55%,
+        var(--admin-page-bg, #061017) 100%
+      );
+  
+    transition:
+      margin-left 250ms ease,
+      width 250ms ease;
+  }
+  
+  /* =========================================================
+     ADMIN BACKGROUND EFFECTS
+     ========================================================= */
+  
+  .admin-background-effects {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 270px;
+    z-index: 0;
+  
+    overflow: hidden;
+  
+    pointer-events: none;
+  }
+  
+  .admin-background-grid {
+    position: absolute;
+    inset: 0;
+  
+    opacity: 0.17;
+  
+    background-image:
+      linear-gradient(
+        rgba(45, 212, 191, 0.035) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        90deg,
+        rgba(45, 212, 191, 0.035) 1px,
+        transparent 1px
+      );
+  
+    background-size: 42px 42px;
+  
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.9),
+      transparent 85%
+    );
+  
+    mask-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.9),
+      transparent 85%
+    );
+  }
+  
+  .admin-glow {
+    position: absolute;
+  
+    border-radius: 999px;
+  
+    opacity: 0.14;
+    filter: blur(130px);
+  }
+  
+  .admin-glow-top {
+    top: -190px;
+    right: -100px;
+  
+    width: 520px;
+    height: 520px;
+  
+    background: var(--admin-accent, #35d4c4);
+  }
+  
+  .admin-glow-bottom {
+    bottom: -240px;
+    left: 10%;
+  
+    width: 480px;
+    height: 480px;
+  
+    background: var(--admin-accent-secondary, #55b9ff);
+  }
+  
+  /* =========================================================
+     ADMIN TOP HEADER
+     ========================================================= */
+  
+  .admin-top-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+  
+    min-height: 88px;
+    padding: 16px 32px;
+  
+    background: rgba(6, 16, 23, 0.88);
+    border-bottom: 1px solid var(--admin-border, #17313a);
+  
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
+  
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+  }
+  
+  .admin-header-title {
+    min-width: 0;
+  }
+  
+  .admin-header-label {
+    margin: 0 0 5px;
+  
+    color: var(--admin-accent, #35d4c4);
+  
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+  }
+  
+  .admin-header-heading {
+    margin: 0;
+  
+    color: var(--admin-text-primary, #edfdfb);
+  
+    font-size: 23px;
+    font-weight: 800;
+    line-height: 1.15;
+  }
+  
+  .admin-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+  }
+  
+  /* =========================================================
+     ADMIN LIVE STATUS
+     ========================================================= */
+  
+  .admin-live-status {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  
+    min-height: 39px;
+    padding: 0 15px;
+  
+    color: var(--admin-text-secondary, #a8bac2);
+  
+    background: rgba(12, 35, 44, 0.82);
+    border: 1px solid var(--admin-border, #17313a);
+    border-radius: 999px;
+  
+    font-size: 11px;
+    font-weight: 600;
+  }
+  
+  .admin-live-dot {
+    width: 7px;
+    height: 7px;
+  
+    background: var(--admin-accent, #35d4c4);
+    border-radius: 50%;
+  
+    box-shadow: 0 0 12px var(--admin-accent, #35d4c4);
+  
+    animation: adminConnectionPulse 2s ease-in-out infinite;
+  }
+  
+  /* =========================================================
+     ADMIN HEADER PROFILE
+     ========================================================= */
+  
+  .admin-header-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  
+    min-height: 48px;
+    padding: 5px 12px 5px 6px;
+  
+    background: rgba(12, 35, 44, 0.72);
+    border: 1px solid var(--admin-border, #17313a);
+    border-radius: 14px;
+  }
+  
+  .admin-header-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    width: 36px;
+    height: 36px;
+  
+    color: #04211f;
+  
+    background: linear-gradient(
+      135deg,
+      var(--admin-accent, #35d4c4),
+      #75e5da
+    );
+  
+    border-radius: 10px;
+  
+    font-size: 14px;
+    font-weight: 900;
+  }
+  
+  .admin-header-profile-text {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .admin-header-profile-name {
+    color: var(--admin-text-primary, #edfdfb);
+  
+    font-size: 11px;
+    font-weight: 700;
+  }
+  
+  .admin-header-profile-role {
+    margin-top: 2px;
+  
+    color: var(--admin-text-muted, #81949d);
+  
+    font-size: 9px;
+    font-weight: 600;
+  }
+  
+  /* =========================================================
+     ADMIN ROUTER CONTENT
+     ========================================================= */
+  
+  .admin-router-content {
+    position: relative;
+    z-index: 1;
+  
+    display: block;
+  
+    width: 100%;
+    min-height: calc(100vh - 88px);
+  
+    overflow: visible;
+  }
+  
+  /* Remove any outer rounded card from admin content */
+  
+  .admin-router-content > * {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  /* =========================================================
+     ADMIN ANIMATIONS
+     ========================================================= */
+  
+  @keyframes adminConnectionPulse {
+    0%,
+    100% {
+      opacity: 0.6;
+      transform: scale(0.85);
+    }
+  
+    50% {
+      opacity: 1;
+      transform: scale(1.18);
+    }
+  }
+  
+  /* =========================================================
+     TABLET AND SMALL DESKTOP
+     Customer cube mobile fallback remains unchanged.
+     ========================================================= */
+  
+  @media (max-width: 1024px) {
+    .cube {
+      transform: none !important;
+    }
+  
+    .cube-face {
+      display: none;
+  
+      transform: none !important;
+    }
+  
+    .cube-face.active-face {
+      display: block;
+    }
+  }
+  
+  /* =========================================================
+     ADMIN TABLET LAYOUT
+     The admin sidebar changes to the top navigation.
+     ========================================================= */
+  
+  @media (max-width: 900px) {
+    .admin-main-content {
+      width: 100%;
+      margin-left: 0;
+      padding-top: 78px;
+    }
+  
+    .admin-background-effects {
+      top: 78px;
+      left: 0;
+    }
+  
+    .admin-top-header {
+      top: 78px;
+  
+      min-height: 80px;
+      padding: 14px 22px;
+    }
+  
+    .admin-router-content {
+      min-height: calc(100vh - 158px);
+    }
+  }
+  
+  /* =========================================================
+     ADMIN MOBILE LAYOUT
+     ========================================================= */
+  
+  @media (max-width: 650px) {
+    .admin-main-content {
+      padding-top: 70px;
+    }
+  
+    .admin-background-effects {
+      top: 70px;
+    }
+  
+    .admin-top-header {
+      top: 70px;
+  
+      align-items: flex-start;
+      gap: 14px;
+  
+      min-height: auto;
+      padding: 14px 16px;
+    }
+  
+    .admin-header-label {
+      font-size: 8px;
+      letter-spacing: 1.5px;
+    }
+  
+    .admin-header-heading {
+      font-size: 18px;
+    }
+  
+    .admin-live-status {
+      min-height: 35px;
+      padding: 0 11px;
+  
+      font-size: 9px;
+    }
+  
+    .admin-header-profile {
+      display: none;
+    }
+  
+    .admin-router-content {
+      min-height: calc(100vh - 140px);
+    }
+  }
+  
+  /* =========================================================
+     ADMIN EXTRA-SMALL MOBILE LAYOUT
+     ========================================================= */
+  
+  @media (max-width: 430px) {
+    .admin-top-header {
+      gap: 10px;
+    }
+  
+    .admin-header-heading {
+      font-size: 16px;
+    }
+  
+    .admin-header-label {
+      max-width: 160px;
+  
+      overflow: hidden;
+  
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  
+    .admin-live-status {
+      justify-content: center;
+  
+      width: 35px;
+      padding: 0;
+    }
+  
+    .admin-live-status span:last-child {
+      display: none;
+    }
+  }
+  :host {
+    display: block;
+    width: 100%;
+    min-height: 100vh;
+  }
+  
+  .admin-main-content {
+    position: relative;
+  
+    width: calc(
+      100% - var(--admin-current-sidebar-width, 270px)
+    );
+  
+    min-width: 0;
+    min-height: 100vh;
+  
+    margin-left: var(
+      --admin-current-sidebar-width,
+      270px
+    );
+  
+    overflow-x: hidden;
+  
+    transition:
+      width 320ms cubic-bezier(0.4, 0, 0.2, 1),
+      margin-left 320ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .admin-background-effects {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+  
+    left: var(
+      --admin-current-sidebar-width,
+      270px
+    );
+  
+    z-index: 0;
+  
+    overflow: hidden;
+    pointer-events: none;
+  
+    transition:
+      left 320ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .admin-background-grid {
+    position: absolute;
+    inset: 0;
+  
+    opacity: 0.18;
+  
+    background-image:
+      linear-gradient(
+        rgba(53, 212, 196, 0.035) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        90deg,
+        rgba(53, 212, 196, 0.035) 1px,
+        transparent 1px
+      );
+  
+    background-size: 38px 38px;
+  }
+  
+  .admin-glow {
+    position: absolute;
+  
+    border-radius: 50%;
+    filter: blur(100px);
+  
+    opacity: 0.22;
+  }
+  
+  .admin-glow-top {
+    top: -180px;
+    right: -120px;
+  
+    width: 500px;
+    height: 500px;
+  
+    background: rgba(53, 212, 196, 0.26);
+  }
+  
+  .admin-glow-bottom {
+    bottom: -220px;
+    left: 10%;
+  
+    width: 520px;
+    height: 520px;
+  
+    background: rgba(85, 185, 255, 0.14);
+  }
+  
+  .admin-top-header {
+    position: relative;
+    z-index: 2;
+  
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  
+    min-height: 118px;
+    padding: 24px 42px;
+  
+    background: rgba(3, 17, 24, 0.92);
+    border-bottom: 1px solid var(--admin-border, #17313a);
+  
+    backdrop-filter: blur(20px);
+  }
+  
+  .admin-header-title {
+    min-width: 0;
+  }
+  
+  .admin-header-label {
+    margin: 0;
+  
+    color: var(--admin-accent, #35d4c4);
+  
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+  }
+  
+  .admin-header-heading {
+    margin: 8px 0 0;
+  
+    color: var(--admin-text-primary, #edfdfb);
+  
+    font-size: 25px;
+    font-weight: 900;
+    line-height: 1.1;
+  }
+  
+  .admin-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  
+    flex-shrink: 0;
+  }
+  
+  .admin-live-status {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  
+    min-height: 46px;
+    padding: 0 18px;
+  
+    color: var(--admin-text-secondary, #a8bac2);
+  
+    background: rgba(11, 42, 51, 0.82);
+    border: 1px solid var(--admin-border, #17313a);
+    border-radius: 999px;
+  
+    font-size: 11px;
+    font-weight: 700;
+  }
+  
+  .admin-live-dot {
+    flex-shrink: 0;
+  
+    width: 7px;
+    height: 7px;
+  
+    background: var(--admin-accent, #35d4c4);
+    border-radius: 50%;
+  
+    box-shadow: 0 0 10px var(--admin-accent, #35d4c4);
+  
+    animation: adminLivePulse 2200ms ease-in-out infinite;
+  }
+  
+  .admin-header-profile {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+  
+    min-height: 56px;
+    padding: 7px 14px 7px 8px;
+  
+    background: rgba(11, 42, 51, 0.82);
+    border: 1px solid var(--admin-border, #17313a);
+    border-radius: 15px;
+  }
+  
+  .admin-header-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    flex-shrink: 0;
+  
+    width: 42px;
+    height: 42px;
+  
+    color: #04211f;
+  
+    background: linear-gradient(
+      135deg,
+      var(--admin-accent, #35d4c4),
+      #76e4da
+    );
+  
+    border-radius: 11px;
+  
+    font-size: 15px;
+    font-weight: 900;
+  }
+  
+  .admin-header-profile-text {
+    display: flex;
+    flex-direction: column;
+  
+    min-width: 0;
+  }
+  
+  .admin-header-profile-name {
+    overflow: hidden;
+  
+    color: var(--admin-text-primary, #edfdfb);
+  
+    font-size: 12px;
+    font-weight: 800;
+  
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .admin-header-profile-role {
+    margin-top: 3px;
+  
+    overflow: hidden;
+  
+    color: var(--admin-text-muted, #81949d);
+  
+    font-size: 9px;
+    font-weight: 600;
+  
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .admin-router-content {
+    position: relative;
+    z-index: 1;
+  
+    width: 100%;
+    min-width: 0;
+    min-height: calc(100vh - 118px);
+  
+    margin: 0;
+    padding: 0;
+  
+    box-sizing: border-box;
+  }
+  
+  @keyframes adminLivePulse {
+    0%,
+    100% {
+      opacity: 0.65;
+      transform: scale(0.9);
+    }
+  
+    50% {
+      opacity: 1;
+      transform: scale(1.12);
+    }
+  }
+  
+  @media (max-width: 900px) {
+    .admin-main-content {
+      width: 100%;
+      min-height: 100vh;
+  
+      margin-left: 0;
+      padding-top: 78px;
+    }
+  
+    .admin-background-effects {
+      top: 78px;
+      left: 0;
+    }
+  
+    .admin-top-header {
+      min-height: auto;
+      padding: 20px 24px;
+    }
+  
+    .admin-router-content {
+      min-height: calc(100vh - 78px);
+    }
+  }
+  
+  @media (max-width: 700px) {
+    .admin-top-header {
+      align-items: flex-start;
+      flex-direction: column;
+  
+      gap: 16px;
+      padding: 18px;
+    }
+  
+    .admin-header-actions {
+      width: 100%;
+    }
+  
+    .admin-live-status,
+    .admin-header-profile {
+      flex: 1;
+    }
+  
+    .admin-header-profile {
+      min-width: 0;
+    }
+  }
+  
+  @media (max-width: 650px) {
+    .admin-main-content {
+      padding-top: 70px;
+    }
+  
+    .admin-background-effects {
+      top: 70px;
+    }
+  }
+  
+  @media (max-width: 470px) {
+    .admin-header-actions {
+      align-items: stretch;
+      flex-direction: column;
+    }
+  
+    .admin-live-status,
+    .admin-header-profile {
+      width: 100%;
+    }
+  }

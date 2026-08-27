@@ -1,0 +1,352 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+/* ================= SCROLLBAR ================= */
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(201, 88, 18, 0.6) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    rgba(239, 68, 68, 0.75),
+    rgba(251, 146, 60, 0.75)
+  );
+  border-radius: 999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(239, 68, 68, 1),
+    rgba(251, 146, 60, 1)
+  );
+}
+
+/* ================= LOADER CONTAINER ================= */
+
+.feedback-loader-container {
+  width: 100%;
+  min-height: 350px;
+}
+
+/* ================= LOADER ================= */
+
+.feedback-loader {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  isolation: isolate;
+  filter:
+    drop-shadow(0 16px 28px rgba(239, 68, 68, 0.18))
+    drop-shadow(0 8px 20px rgba(251, 146, 60, 0.12));
+}
+
+/* ================= ROTATING RING ================= */
+
+.feedback-loader-ring {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 50%;
+  border-style: solid;
+  border-width: 13px;
+  animation: feedbackRingSpin 1.8s linear infinite;
+}
+
+.feedback-loader-dark {
+  border-color: rgba(239, 68, 68, 0.13);
+  border-top-color: #ef4444;
+  border-right-color: #fb923c;
+  border-bottom-color: rgba(251, 146, 60, 0.42);
+  box-shadow:
+    0 0 28px rgba(239, 68, 68, 0.16),
+    inset 0 0 22px rgba(251, 146, 60, 0.08);
+}
+
+.feedback-loader-light {
+  border-color: rgba(169, 66, 12, 0.14);
+  border-top-color: #a9420c;
+  border-right-color: #c95812;
+  border-bottom-color: rgba(220, 122, 57, 0.5);
+  box-shadow:
+    0 0 25px rgba(169, 66, 12, 0.18),
+    inset 0 0 20px rgba(201, 88, 18, 0.08);
+}
+
+/* ================= LOADER TICKS ================= */
+
+.feedback-loader-ticks {
+  position: absolute;
+  inset: 22px;
+  z-index: 2;
+  border-radius: 50%;
+  animation: feedbackTicksSpin 3.6s linear infinite reverse;
+}
+
+.feedback-loader-tick {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 3px;
+  height: 10px;
+  border-radius: 999px;
+  transform-origin: 1.5px 53px;
+  transform:
+    translateX(-50%)
+    rotate(calc(var(--tick-index) * 45deg));
+  animation: feedbackTickPulse 1.8s ease-in-out infinite;
+  animation-delay: calc(var(--tick-index) * -0.15s);
+}
+
+.feedback-tick-dark {
+  background: linear-gradient(
+    180deg,
+    #fed7aa,
+    #fb923c
+  );
+}
+
+.feedback-tick-light {
+  background: linear-gradient(
+    180deg,
+    #dc7a39,
+    #a9420c
+  );
+}
+
+/* ================= ROTATING ARROWS ================= */
+
+.feedback-arrow-rotation {
+  position: absolute;
+  inset: 25px;
+  z-index: 4;
+  border-radius: 50%;
+  animation: feedbackArrowSpin 1.8s linear infinite;
+}
+
+.feedback-arrow-group {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.feedback-arrow {
+  position: absolute;
+  left: 50%;
+  width: 0;
+  height: 0;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 5px 8px rgba(0, 0, 0, 0.22));
+}
+
+.feedback-arrow-top {
+  top: 4px;
+  border-left: 14px solid transparent;
+  border-right: 14px solid transparent;
+  border-bottom: 34px solid;
+}
+
+.feedback-arrow-bottom {
+  bottom: 4px;
+  border-left: 14px solid transparent;
+  border-right: 14px solid transparent;
+  border-top: 34px solid;
+}
+
+.feedback-arrow-red-dark {
+  border-bottom-color: #ef4444;
+}
+
+.feedback-arrow-red-light {
+  border-bottom-color: #a9420c;
+}
+
+.feedback-arrow-white-dark {
+  border-top-color: #f8fafc;
+}
+
+.feedback-arrow-white-light {
+  border-top-color: #f1dccb;
+}
+
+/* ================= CENTER CIRCLE ================= */
+
+.feedback-loader-center {
+  position: absolute;
+  width: 38px;
+  height: 38px;
+  z-index: 3;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 1px rgba(251, 146, 60, 0.12),
+    0 0 22px rgba(239, 68, 68, 0.15);
+}
+
+/* ================= LOADING DOTS ================= */
+
+.feedback-loading-dot {
+  display: block;
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  animation: feedbackDotBounce 1.2s ease-in-out infinite;
+}
+
+.feedback-loading-dot-two {
+  animation-delay: 0.15s;
+}
+
+.feedback-loading-dot-three {
+  animation-delay: 0.3s;
+}
+
+/* ================= MODAL ANIMATION ================= */
+
+.animate-fade-in {
+  animation: feedbackFadeIn 0.25s ease-out both;
+}
+
+/* ================= KEYFRAMES ================= */
+
+@keyframes feedbackRingSpin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes feedbackArrowSpin {
+  from {
+    transform: rotate(45deg);
+  }
+
+  to {
+    transform: rotate(405deg);
+  }
+}
+
+@keyframes feedbackTicksSpin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes feedbackTickPulse {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes feedbackDotBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+
+  50% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+@keyframes feedbackFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 768px) {
+  .feedback-loader-container {
+    min-height: 280px;
+  }
+
+  .feedback-loader {
+    width: 120px;
+    height: 120px;
+  }
+
+  .feedback-loader-ring {
+    border-width: 10px;
+  }
+
+  .feedback-loader-ticks {
+    inset: 19px;
+  }
+
+  .feedback-loader-tick {
+    height: 8px;
+    transform-origin: 1.5px 40px;
+  }
+
+  .feedback-arrow-rotation {
+    inset: 20px;
+  }
+
+  .feedback-arrow-top {
+    border-left-width: 11px;
+    border-right-width: 11px;
+    border-bottom-width: 27px;
+  }
+
+  .feedback-arrow-bottom {
+    border-left-width: 11px;
+    border-right-width: 11px;
+    border-top-width: 27px;
+  }
+
+  .feedback-loader-center {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feedback-loader-ring,
+  .feedback-loader-ticks,
+  .feedback-arrow-rotation,
+  .feedback-loader-tick,
+  .feedback-loading-dot,
+  .animate-fade-in {
+    animation-duration: 3s;
+  }
+}

@@ -1,0 +1,64 @@
+# ============================================================
+# DriveEase — .gitignore
+# ============================================================
+
+# --- Secrets & Credentials ---
+.env
+.env.*
+!.env.example
+application-prod.properties
+secrets/
+credentials/
+*.key
+*.pem
+*.p12
+*.jks
+
+# --- Maven ---
+springapp/target/
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# --- Node / Angular ---
+angularapp/node_modules/
+node_modules/
+angularapp/dist/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# --- IDE ---
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# --- Logs ---
+logs/
+*.log
+
+# --- OS ---
+.DS_Store
+Desktop.ini
+
+# --- Temporary files ---
+*.tmp
+*.bak
+*.orig
+
+# --- GitHub Actions artifacts (keep workflow YAML, not targets) ---
+.github/workflows/target/
+
+# Junk extracted zip folder
+808f8b5e*/
+
+# Build output
+springapp/target/
+

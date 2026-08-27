@@ -1,0 +1,377 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+/* ================= SCROLLBAR ================= */
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(201, 88, 18, 0.6) transparent;
+}
+  
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    rgba(239, 68, 68, 0.75),
+    rgba(251, 146, 60, 0.75)
+  );
+  border-radius: 999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(239, 68, 68, 1),
+    rgba(251, 146, 60, 1)
+  );
+}
+
+/* ================= LOADER CONTAINER ================= */
+
+.requests-loader-box {
+  width: 100%;
+  min-height: 360px;
+}
+
+/* ================= COMPLETE LOADER ================= */
+
+.requests-loader {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  isolation: isolate;
+  filter:
+    drop-shadow(0 16px 28px rgba(239, 68, 68, 0.18))
+    drop-shadow(0 8px 20px rgba(251, 146, 60, 0.12));
+}
+
+/* ================= OUTER RING ================= */
+
+.requests-loader-ring {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 50%;
+  border-style: solid;
+  border-width: 13px;
+  animation: requestsRingSpin 1.8s linear infinite;
+}
+
+.requests-loader-ring-dark {
+  border-color: rgba(239, 68, 68, 0.14);
+  border-top-color: #ef4444;
+  border-right-color: #fb923c;
+  border-bottom-color: rgba(251, 146, 60, 0.45);
+  box-shadow:
+    0 0 28px rgba(239, 68, 68, 0.16),
+    inset 0 0 22px rgba(251, 146, 60, 0.08);
+}
+
+.requests-loader-ring-light {
+  border-color: rgba(169, 66, 12, 0.14);
+  border-top-color: #a9420c;
+  border-right-color: #c95812;
+  border-bottom-color: rgba(220, 122, 57, 0.5);
+  box-shadow:
+    0 0 25px rgba(169, 66, 12, 0.18),
+    inset 0 0 20px rgba(201, 88, 18, 0.08);
+}
+
+/* ================= INNER TICKS ================= */
+
+.requests-loader-ticks {
+  position: absolute;
+  inset: 22px;
+  z-index: 2;
+  border-radius: 50%;
+  animation: requestsTicksSpin 3.6s linear infinite reverse;
+}
+
+.requests-loader-tick {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 3px;
+  height: 10px;
+  border-radius: 999px;
+  transform-origin: 1.5px 53px;
+  animation: requestsTickPulse 1.8s ease-in-out infinite;
+}
+
+.requests-tick-dark {
+  background: linear-gradient(
+    180deg,
+    #fed7aa,
+    #fb923c
+  );
+}
+
+.requests-tick-light {
+  background: linear-gradient(
+    180deg,
+    #dc7a39,
+    #a9420c
+  );
+}
+
+.request-tick-1 {
+  transform: translateX(-50%) rotate(0deg);
+  animation-delay: 0s;
+}
+
+.request-tick-2 {
+  transform: translateX(-50%) rotate(45deg);
+  animation-delay: -0.15s;
+}
+
+.request-tick-3 {
+  transform: translateX(-50%) rotate(90deg);
+  animation-delay: -0.3s;
+}
+
+.request-tick-4 {
+  transform: translateX(-50%) rotate(135deg);
+  animation-delay: -0.45s;
+}
+
+.request-tick-5 {
+  transform: translateX(-50%) rotate(180deg);
+  animation-delay: -0.6s;
+}
+
+.request-tick-6 {
+  transform: translateX(-50%) rotate(225deg);
+  animation-delay: -0.75s;
+}
+
+.request-tick-7 {
+  transform: translateX(-50%) rotate(270deg);
+  animation-delay: -0.9s;
+}
+
+.request-tick-8 {
+  transform: translateX(-50%) rotate(315deg);
+  animation-delay: -1.05s;
+}
+
+/* ================= ROTATING ARROWS ================= */
+
+.requests-arrows-rotation {
+  position: absolute;
+  inset: 25px;
+  z-index: 4;
+  border-radius: 50%;
+  animation: requestsArrowSpin 1.8s linear infinite;
+}
+
+.requests-arrows-group {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.requests-arrow {
+  position: absolute;
+  left: 50%;
+  width: 0;
+  height: 0;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 5px 8px rgba(0, 0, 0, 0.22));
+}
+
+.requests-arrow-top {
+  top: 4px;
+  border-left: 14px solid transparent;
+  border-right: 14px solid transparent;
+  border-bottom: 34px solid;
+}
+
+.requests-arrow-bottom {
+  bottom: 4px;
+  border-left: 14px solid transparent;
+  border-right: 14px solid transparent;
+  border-top: 34px solid;
+}
+
+.requests-arrow-top-dark {
+  border-bottom-color: #ef4444;
+}
+
+.requests-arrow-top-light {
+  border-bottom-color: #a9420c;
+}
+
+.requests-arrow-bottom-dark {
+  border-top-color: #f8fafc;
+}
+
+.requests-arrow-bottom-light {
+  border-top-color: #f1dccb;
+}
+
+/* ================= LOADER CENTER ================= */
+
+.requests-loader-center {
+  position: absolute;
+  width: 38px;
+  height: 38px;
+  z-index: 3;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 1px rgba(251, 146, 60, 0.12),
+    0 0 22px rgba(239, 68, 68, 0.15);
+}
+
+/* ================= LOADING DOTS ================= */
+
+.requests-loading-dot {
+  display: block;
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  animation: requestsDotBounce 1.2s ease-in-out infinite;
+}
+
+.requests-loading-dot-two {
+  animation-delay: 0.15s;
+}
+
+.requests-loading-dot-three {
+  animation-delay: 0.3s;
+}
+
+/* ================= MODAL ================= */
+
+.modal-enter {
+  animation: requestsModalEnter 0.25s ease-out both;
+}
+
+/* ================= KEYFRAMES ================= */
+
+@keyframes requestsRingSpin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes requestsArrowSpin {
+  from {
+    transform: rotate(45deg);
+  }
+
+  to {
+    transform: rotate(405deg);
+  }
+}
+
+@keyframes requestsTicksSpin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes requestsTickPulse {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes requestsDotBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+
+  50% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+@keyframes requestsModalEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 768px) {
+  .requests-loader-box {
+    min-height: 300px;
+  }
+
+  .requests-loader {
+    width: 120px;
+    height: 120px;
+  }
+
+  .requests-loader-ring {
+    border-width: 10px;
+  }
+
+  .requests-loader-ticks {
+    inset: 19px;
+  }
+
+  .requests-loader-tick {
+    height: 8px;
+    transform-origin: 1.5px 40px;
+  }
+
+  .requests-arrows-rotation {
+    inset: 20px;
+  }
+
+  .requests-arrow-top {
+    border-left-width: 11px;
+    border-right-width: 11px;
+    border-bottom-width: 27px;
+  }
+
+  .requests-arrow-bottom {
+    border-left-width: 11px;
+    border-right-width: 11px;
+    border-top-width: 27px;
+  }
+
+  .requests-loader-center {
+    width: 30px;
+    height: 30px;
+  }
+}
