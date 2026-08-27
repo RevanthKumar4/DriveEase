@@ -22,7 +22,7 @@ import {
   DriverService
 } from 'src/app/services/driver.service';
 
-import { createWorker } from 'tesseract.js';
+
 
 @Component({
   selector: 'app-driver-management',
@@ -318,54 +318,10 @@ export class DriverManagementComponent implements OnInit {
    * OCR — preprocess + recognize + parse
    * ============================================================ */
 
-  private async scanLicense(imageData: string): Promise<void> {
-    this.isScanning = true;
-    this.scanError = '';
-    this.scanMessage = 'Reading license details, please wait...';
-
-    try {
-      const processed = await this.preprocessImage(imageData);
-
-      const worker = await createWorker('eng');
-
-      await worker.setParameters({
-        tessedit_pageseg_mode: '6' as any,
-        preserve_interword_spaces: '1'
-      });
-
-      const result = await worker.recognize(processed);
-      await worker.terminate();
-
-      const rawText = result?.data?.text || '';
-
-      if (!rawText.trim()) {
-        this.scanError =
-          'Could not read text. Please use a clearer, straight photo, or enter details manually.';
-        return;
-      }
-
-      this.autoFillFromText(rawText);
-
-      if (this.autoFilledFields.length > 0) {
-        this.scanMessage =
-          'Auto-filled: ' +
-          this.autoFilledFields.join(', ') +
-          '. Please review carefully before saving.';
-      } else {
-        this.scanError =
-          'No clear details were found. Please enter them manually.';
-      }
-    } catch (error) {
-      console.error('OCR error:', error);
-      this.scanError =
-        'Scanning failed. Please enter the details manually.';
-    } finally {
-      this.isScanning = false;
-
-      if (this.scanMessage) {
-        setTimeout(() => (this.scanMessage = ''), 8000);
-      }
-    }
+  private async scanLicense(_imageData: string): Promise<void> {
+    this.isScanning = false;
+    this.scanError = 'OCR scanning is not available. Please enter driver license details manually.';
+    this.scanMessage = '';
   }
 
   /**
